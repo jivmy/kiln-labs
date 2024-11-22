@@ -4,7 +4,7 @@
 
 @layer base {
   html {
-    font-family: 'SF Pro', sans-serif;
+    font-family: 'SF Pro', sans-serif !important;
   }
 }
 
@@ -19,4 +19,3 @@ body {
     @apply px-2;
   }
 }
-
