@@ -15,7 +15,7 @@ const HomePage = () => {
         </header>
 
         {/* Project Sections */}
-        {['Sound Button', 'Incoming...'].map((project, index) => (
+        {['Sound Orb', 'Incoming...'].map((project, index) => (
           <section key={index} className="w-full flex flex-col items-center gap-6">
             <div className="w-full flex flex-col items-start gap-2">
               <span className="w-full text-black text-xs font-bold opacity-30 font-['SF_Pro']">
@@ -26,7 +26,7 @@ const HomePage = () => {
               </h2>
               <p className="w-full text-black text-sm font-normal opacity-30 font-['SF_Pro']">
                 {index === 0
-                  ? 'Button that responds to sound input.'
+                  ? 'Orb that responds to sound input.'
                   : 'Hold your horses...'}
               </p>
             </div>
