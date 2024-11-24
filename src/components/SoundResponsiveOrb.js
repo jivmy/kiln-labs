@@ -13,7 +13,7 @@ function SoundResponsiveOrb() {
       const analyser = audioContext.createAnalyser();
       const source = audioContext.createMediaStreamSource(stream);
 
-      analyser.fftSize = 1024; // Increased for more detailed frequency data
+      analyser.fftSize = 512; // Smaller FFT size for more sensitivity
       source.connect(analyser);
 
       const dataArray = new Uint8Array(analyser.frequencyBinCount);
@@ -21,9 +21,12 @@ function SoundResponsiveOrb() {
       const updateVolume = () => {
         analyser.getByteFrequencyData(dataArray);
         const avgVolume = dataArray.reduce((a, b) => a + b) / dataArray.length;
-        
+
+        // Increase sensitivity by amplifying the volume calculation
+        const amplifiedVolume = Math.min(100, avgVolume * 1.5);
+
         // Smooth out the volume changes
-        const smoothedVolume = prevVolumeRef.current * 0.8 + avgVolume * 0.2;
+        const smoothedVolume = prevVolumeRef.current * 0.8 + amplifiedVolume * 0.2;
         setVolume(smoothedVolume);
         prevVolumeRef.current = smoothedVolume;
 
@@ -45,9 +48,10 @@ function SoundResponsiveOrb() {
     };
   }, []);
 
-  // Dynamically calculate scale and glow
-  const scale = 1 + (volume / 128) * 0.5; // Smoother scaling
-  const glow = Math.min(20, Math.max(0, volume / 5)); // Add a glow effect
+  // Dynamically calculate scale, color, and glow
+  const scale = micActive ? 0.5 + (volume / 100) * 1.5 : 1; // Default size 1 before mic input
+  const glow = micActive ? Math.min(30, volume / 5) : 10; // Default glow when inactive
+  const colorLightness = micActive ? 90 - (volume / 100) * 40 : 80; // Pale yellow before mic input
 
   return (
     <div
@@ -55,8 +59,8 @@ function SoundResponsiveOrb() {
         position: 'relative',
         width: '100%', // Take the full width of the parent container
         height: '100%', // Take the full height of the parent container
-        backgroundColor: 'hsl(0, 0%, 98%)', // Super pale gray
-        borderRadius: 'inherit', // Match the parent's border radius if it has one
+        backgroundColor: 'hsl(0, 0%, 98%)', // Super pale gray background
+        borderRadius: 'inherit', // Match the parent's border radius
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -66,16 +70,16 @@ function SoundResponsiveOrb() {
       {/* Orb */}
       <div
         style={{
-          width: '50%', // Orb takes 50% of the container's width
-          height: '50%', // Orb is a square based on the container's height
+          width: '50%', // Orb size based on the container
+          height: '50%',
           borderRadius: '50%',
-          backgroundColor: `hsl(50, 100%, 80%)`, // Pale yellow color
+          backgroundColor: `hsl(50, 100%, ${colorLightness}%)`, // Dynamic pale yellow
           transform: `scale(${scale})`,
-          transition: 'transform 0.1s ease, background-color 0.1s ease',
-          boxShadow: `0 0 ${glow}px ${glow}px rgba(255, 255, 200, 0.5)`, // Soft yellow glow
+          transition: 'transform 0.2s ease, background-color 0.2s ease',
+          boxShadow: `0 0 ${glow}px ${glow}px rgba(255, 255, 200, 0.5)`, // Glow effect
         }}
       ></div>
-  
+
       {/* Button */}
       <button
         onClick={requestMicrophone}
@@ -107,7 +111,7 @@ function SoundResponsiveOrb() {
         </svg>
       </button>
     </div>
-  );  
+  );
 }
 
 export default SoundResponsiveOrb;
