@@ -3,11 +3,12 @@ import React, { useEffect, useState, useRef } from 'react';
 function SoundResponsiveOrb() {
   const [volume, setVolume] = useState(0);
   const [micActive, setMicActive] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 }); // Position of the orb
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
   const streamRef = useRef(null);
   const animationRef = useRef(null);
-  const previousVolumeRef = useRef(0); // Track the previous volume
+  const recognitionRef = useRef(null); // For speech recognition
 
   const requestMicrophone = () => {
     if (micActive) {
@@ -20,8 +21,13 @@ function SoundResponsiveOrb() {
         streamRef.current.getTracks().forEach((track) => track.stop());
         streamRef.current = null;
       }
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+        recognitionRef.current = null;
+      }
       setMicActive(false);
       setVolume(0);
+      setPosition({ x: 0, y: 0 }); // Reset position
       cancelAnimationFrame(animationRef.current);
       return;
     }
@@ -43,21 +49,57 @@ function SoundResponsiveOrb() {
       const updateVolume = () => {
         analyser.getByteFrequencyData(dataArray);
         const avgVolume = dataArray.reduce((a, b) => a + b) / dataArray.length;
-
-        // Relative change
-        const volumeChange = Math.abs(avgVolume - previousVolumeRef.current);
-        previousVolumeRef.current = avgVolume;
-
-        // Combine magnitude and relative change for sensitivity
-        const combinedVolume = avgVolume * 0.8 + volumeChange * 0.5; // Boosted response
-        setVolume((prev) => prev * 0.4 + combinedVolume * 0.6); // Smoother but sensitive
+        setVolume((prev) => prev * 0.5 + avgVolume * 0.5); // Smoother response
 
         animationRef.current = requestAnimationFrame(updateVolume);
       };
 
       updateVolume();
       setMicActive(true);
+
+      // Initialize speech recognition
+      initializeSpeechRecognition();
     }).catch(() => alert('Microphone access denied.'));
+  };
+
+  const initializeSpeechRecognition = () => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      alert('Speech recognition is not supported in this browser.');
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.interimResults = false; // Only finalized results
+    recognition.continuous = true; // Keep listening
+    recognition.onresult = (event) => {
+      const transcript = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
+      handleDirectionCommand(transcript);
+    };
+    recognition.onerror = (err) => console.error('Speech recognition error:', err);
+    recognition.start();
+    recognitionRef.current = recognition;
+  };
+
+  const handleDirectionCommand = (command) => {
+    const moveDistance = 50; // Distance the orb moves in a direction
+    setPosition((prev) => {
+      switch (command) {
+        case 'left':
+          return { x: prev.x - moveDistance, y: prev.y };
+        case 'right':
+          return { x: prev.x + moveDistance, y: prev.y };
+        case 'up':
+          return { x: prev.x, y: prev.y - moveDistance };
+        case 'down':
+          return { x: prev.x, y: prev.y + moveDistance };
+        default:
+          return prev;
+      }
+    });
   };
 
   useEffect(() => {
@@ -72,17 +114,14 @@ function SoundResponsiveOrb() {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach((track) => track.stop());
       }
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
     };
   }, []);
 
-  // Outer orb scale: More responsive
-  const scale = 1 + (micActive ? volume / 15 : 0.2); // Increased sensitivity
-  const colorLightness = Math.min(95, 90 - volume / 15); // Keep pale tones, more responsive
-
-  // Inner orb scale: Smooth and higher sensitivity
-  const normalizedVolume = Math.min(1, volume / 75); // Normalize volume
-  const innerScale =
-    micActive && volume > 1 ? 0.3 + Math.pow(normalizedVolume, 0.7) * 1.8 : 0; // Higher response
+  // Orb scaling
+  const scale = 1 + (micActive ? volume / 20 : 0.2); // Outer orb sensitivity
 
   return (
     <div
@@ -95,37 +134,23 @@ function SoundResponsiveOrb() {
         justifyContent: 'center',
         alignItems: 'center',
         overflow: 'hidden',
-        borderRadius: 'inherit',
       }}
     >
-      {/* Outer Orb */}
+      {/* Orb */}
       <div
         style={{
-          position: 'relative',
+          position: 'absolute',
+          left: `calc(50% + ${position.x}px)`,
+          top: `calc(50% + ${position.y}px)`,
           width: '15%',
           height: '15%',
           borderRadius: '50%',
-          backgroundColor: `hsl(50, 100%, ${colorLightness}%)`, // Pale yellow tones
+          backgroundColor: 'hsl(50, 100%, 90%)', // Pale yellow
           transform: `scale(${scale})`,
-          transition: 'transform 0.1s ease, background-color 0.1s ease',
-          boxShadow: `0 0 10px 10px rgba(255, 255, 200, 0.5)`,
+          transition: 'transform 0.1s ease, left 0.2s ease, top 0.2s ease',
+          boxShadow: '0 0 10px 10px rgba(255, 255, 200, 0.5)', // Glow effect
         }}
-      >
-        {/* Inner Orb */}
-        <div
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            width: '30%', // Smaller size for inner orb
-            height: '30%',
-            transform: `translate(-50%, -50%) scale(${innerScale})`,
-            borderRadius: '50%',
-            backgroundColor: `hsl(50, 100%, ${colorLightness - 10}%)`, // Slightly darker yellow
-            transition: 'transform 0.2s ease', // Smooth scaling
-          }}
-        ></div>
-      </div>
+      ></div>
 
       {/* Microphone Button */}
       <button
