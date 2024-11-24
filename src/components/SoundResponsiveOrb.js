@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 function SoundResponsiveOrb() {
   const [volume, setVolume] = useState(0);
   const [micActive, setMicActive] = useState(false);
-  const [notes, setNotes] = useState([]);
+  const [particles, setParticles] = useState([]);
   const animationRef = useRef(null);
   const prevVolumeRef = useRef(0);
 
@@ -31,9 +31,9 @@ function SoundResponsiveOrb() {
         setVolume(smoothedVolume);
         prevVolumeRef.current = smoothedVolume;
 
-        // Generate music notes when volume exceeds a threshold
+        // Generate particles when volume exceeds a threshold
         if (micActive && smoothedVolume > 10) {
-          generateNote();
+          generateParticle();
         }
 
         animationRef.current = requestAnimationFrame(updateVolume);
@@ -46,23 +46,23 @@ function SoundResponsiveOrb() {
     });
   };
 
-  const generateNote = () => {
-    const id = Math.random().toString(36).substr(2, 9); // Unique ID for the note
-    const note = {
+  const generateParticle = () => {
+    const id = Math.random().toString(36).substr(2, 9); // Unique ID for the particle
+    const particle = {
       id,
-      size: Math.random() * 20 + 10, // Random size between 10px and 30px
-      opacity: Math.random() * 0.5 + 0.5, // Random opacity between 0.5 and 1
-      x: Math.random() * 200 - 100, // Random x-axis movement
-      y: Math.random() * 200 - 100, // Random y-axis movement
+      size: Math.random() * 10 + 5, // Random size between 5px and 15px
+      x: 0, // Start at the orb's center
+      y: 0,
+      dx: Math.random() * 4 - 2, // Random x-axis velocity
+      dy: Math.random() * 4 - 2, // Random y-axis velocity
+      opacity: 1, // Start fully visible
     };
 
-    console.log('Generated Note:', note); // Debugging note creation
+    setParticles((prevParticles) => [...prevParticles, particle]);
 
-    setNotes((prevNotes) => [...prevNotes, note]);
-
-    // Remove the note after animation (3 seconds)
+    // Remove particle after 3 seconds
     setTimeout(() => {
-      setNotes((prevNotes) => prevNotes.filter((n) => n.id !== id));
+      setParticles((prevParticles) => prevParticles.filter((p) => p.id !== id));
     }, 3000);
   };
 
@@ -74,10 +74,10 @@ function SoundResponsiveOrb() {
     };
   }, []);
 
-  // Dynamically calculate scale, color, and glow
+  // Dynamically calculate scale, glow, and background gradient
   const scale = micActive ? 0.5 + (volume / 100) * 1.5 : 1; // Default size 1 before mic input
   const glow = micActive ? Math.min(30, volume / 5) : 10; // Default glow when inactive
-  const colorLightness = micActive ? 90 - (volume / 100) * 40 : 80; // Pale yellow before mic input
+  const backgroundColor = `hsl(50, ${50 + volume / 2}%, ${95 - volume / 5}%)`; // Dynamic pale yellow hues
 
   return (
     <div
@@ -85,12 +85,13 @@ function SoundResponsiveOrb() {
         position: 'relative',
         width: '100%', // Take the full width of the parent container
         height: '100%', // Take the full height of the parent container
-        backgroundColor: 'hsl(0, 0%, 98%)', // Super pale gray background
+        background: `radial-gradient(circle, ${backgroundColor}, hsl(50, 50%, 98%))`, // Dynamic yellow gradient
         borderRadius: 'inherit', // Match the parent's border radius
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        overflow: 'hidden', // Prevent notes from breaking outside
+        overflow: 'hidden', // Prevent visual artifacts
+        transition: 'background 0.3s ease', // Smooth gradient transitions
       }}
     >
       {/* Orb */}
@@ -99,27 +100,26 @@ function SoundResponsiveOrb() {
           width: '50%', // Orb size based on the container
           height: '50%',
           borderRadius: '50%',
-          backgroundColor: `hsl(50, 100%, ${colorLightness}%)`, // Dynamic pale yellow
+          backgroundColor: `hsl(50, 100%, ${90 - (volume / 100) * 40}%)`, // Dynamic pale yellow
           transform: `scale(${scale})`,
           transition: 'transform 0.2s ease, background-color 0.2s ease',
           boxShadow: `0 0 ${glow}px ${glow}px rgba(255, 255, 200, 0.5)`, // Glow effect
         }}
       ></div>
 
-      {/* Music Notes */}
-      {notes.map((note) => (
+      {/* Particles */}
+      {particles.map((particle) => (
         <div
-          key={note.id}
+          key={particle.id}
           style={{
             position: 'absolute',
-            width: `${note.size}px`,
-            height: `${note.size}px`,
-            backgroundColor: 'rgba(255, 215, 0, 0.8)', // Golden yellow for notes
+            width: `${particle.size}px`,
+            height: `${particle.size}px`,
+            backgroundColor: 'rgba(255, 215, 0, 0.8)', // Golden yellow for particles
             borderRadius: '50%',
-            opacity: note.opacity,
-            transform: `translate(${note.x}px, ${note.y}px)`,
-            animation: 'float 3s ease-out',
-            border: '1px solid black', // Debugging visibility
+            opacity: particle.opacity,
+            transform: `translate(${particle.x}px, ${particle.y}px)`,
+            animation: `particle-move 3s ease-out`,
           }}
         ></div>
       ))}
@@ -156,13 +156,13 @@ function SoundResponsiveOrb() {
       </button>
 
       <style jsx>{`
-        @keyframes float {
+        @keyframes particle-move {
           0% {
             transform: translate(0, 0);
             opacity: 1;
           }
           100% {
-            transform: translate(0, -150px) scale(0.5);
+            transform: translate(calc(100px * var(--dx)), calc(100px * var(--dy)));
             opacity: 0;
           }
         }
