@@ -48,20 +48,21 @@ function SoundResponsiveOrb() {
 
   const generateNote = () => {
     const id = Math.random().toString(36).substr(2, 9); // Unique ID for the note
-    setNotes((prevNotes) => [
-      ...prevNotes,
-      {
-        id,
-        size: Math.random() * 20 + 10, // Random size between 10px and 30px
-        opacity: Math.random() * 0.5 + 0.5, // Random opacity between 0.5 and 1
-        x: Math.random() * 200 - 100, // Random x-axis movement
-        y: Math.random() * 200 - 100, // Random y-axis movement
-      },
-    ]);
+    const note = {
+      id,
+      size: Math.random() * 20 + 10, // Random size between 10px and 30px
+      opacity: Math.random() * 0.5 + 0.5, // Random opacity between 0.5 and 1
+      x: Math.random() * 200 - 100, // Random x-axis movement
+      y: Math.random() * 200 - 100, // Random y-axis movement
+    };
+
+    console.log('Generated Note:', note); // Debugging note creation
+
+    setNotes((prevNotes) => [...prevNotes, note]);
 
     // Remove the note after animation (3 seconds)
     setTimeout(() => {
-      setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
+      setNotes((prevNotes) => prevNotes.filter((n) => n.id !== id));
     }, 3000);
   };
 
@@ -89,7 +90,7 @@ function SoundResponsiveOrb() {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        overflow: 'hidden', // Ensures notes don’t overflow outside
+        overflow: 'hidden', // Prevent notes from breaking outside
       }}
     >
       {/* Orb */}
@@ -118,6 +119,7 @@ function SoundResponsiveOrb() {
             opacity: note.opacity,
             transform: `translate(${note.x}px, ${note.y}px)`,
             animation: 'float 3s ease-out',
+            border: '1px solid black', // Debugging visibility
           }}
         ></div>
       ))}
