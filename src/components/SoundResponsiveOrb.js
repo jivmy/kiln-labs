@@ -4,6 +4,7 @@ function SoundResponsiveOrb() {
   const [volume, setVolume] = useState(0);
   const [micActive, setMicActive] = useState(false);
   const [particles, setParticles] = useState([]);
+  const [rotation, setRotation] = useState(0);
   const animationRef = useRef(null);
   const prevVolumeRef = useRef(0);
 
@@ -14,7 +15,7 @@ function SoundResponsiveOrb() {
       const analyser = audioContext.createAnalyser();
       const source = audioContext.createMediaStreamSource(stream);
 
-      analyser.fftSize = 256; // Smaller FFT size for more sensitivity
+      analyser.fftSize = 512;
       source.connect(analyser);
 
       const dataArray = new Uint8Array(analyser.frequencyBinCount);
@@ -23,16 +24,12 @@ function SoundResponsiveOrb() {
         analyser.getByteFrequencyData(dataArray);
         const avgVolume = dataArray.reduce((a, b) => a + b) / dataArray.length;
 
-        // Increase sensitivity dramatically
-        const amplifiedVolume = Math.min(150, avgVolume * 5);
-
-        // Smooth out the volume changes
-        const smoothedVolume = prevVolumeRef.current * 0.6 + amplifiedVolume * 0.4;
+        const amplifiedVolume = Math.min(100, avgVolume * 3);
+        const smoothedVolume = prevVolumeRef.current * 0.7 + amplifiedVolume * 0.3;
         setVolume(smoothedVolume);
         prevVolumeRef.current = smoothedVolume;
 
-        // Generate particles when volume exceeds a very low threshold
-        if (micActive && smoothedVolume > 1) {
+        if (micActive && smoothedVolume > 2) {
           generateParticles(smoothedVolume);
         }
 
@@ -47,19 +44,18 @@ function SoundResponsiveOrb() {
   };
 
   const generateParticles = (volume) => {
-    const newParticles = Array.from({ length: Math.ceil(volume / 10) }, () => ({
+    const newParticles = Array.from({ length: Math.ceil(volume / 5) }, () => ({
       id: Math.random().toString(36).substr(2, 9),
-      size: Math.random() * 8 + 2, // Random size between 2px and 10px
-      x: 0, // Start at the orb's center
+      size: Math.random() * 10 + 5,
+      x: 0,
       y: 0,
-      dx: (Math.random() - 0.5) * 6, // Random x-direction velocity
-      dy: (Math.random() - 0.5) * 6, // Random y-direction velocity
-      opacity: 1, // Start fully visible
+      dx: (Math.random() - 0.5) * 4,
+      dy: (Math.random() - 0.5) * 4,
+      opacity: 1,
     }));
 
     setParticles((prevParticles) => [...prevParticles, ...newParticles]);
 
-    // Remove particles after their lifespan (2 seconds)
     setTimeout(() => {
       setParticles((prevParticles) =>
         prevParticles.filter((p) => !newParticles.some((np) => np.id === p.id))
@@ -72,11 +68,12 @@ function SoundResponsiveOrb() {
       setParticles((prevParticles) =>
         prevParticles.map((p) => ({
           ...p,
-          x: p.x + p.dx * 2, // Move particle in x-direction
-          y: p.y + p.dy * 2, // Move particle in y-direction
-          opacity: Math.max(0, p.opacity - 0.05), // Gradually fade out
+          x: p.x + p.dx * 2,
+          y: p.y + p.dy * 2,
+          opacity: Math.max(0, p.opacity - 0.05),
         }))
       );
+      setRotation((prevRotation) => prevRotation + 0.5);
     }, 50);
 
     return () => clearInterval(interval);
@@ -90,11 +87,9 @@ function SoundResponsiveOrb() {
     };
   }, []);
 
-  // Dynamically calculate scale, color, glow, and rotation
-  const scale = micActive ? 0.8 + (volume / 100) * 2 : 1; // Default size before mic input
-  const glow = micActive ? Math.min(50, volume / 2) : 10; // Glow intensity
-  const rotation = micActive ? volume * 0.5 : 0; // Rotate sun rays dynamically
-  const colorLightness = micActive ? 90 - (volume / 150) * 40 : 80; // Pale yellow
+  const scale = micActive ? 0.5 + (volume / 100) * 1.5 : 1;
+  const glow = micActive ? Math.min(30, volume / 5) : 10;
+  const colorLightness = micActive ? 90 - (volume / 100) * 40 : 80;
 
   return (
     <div
@@ -102,15 +97,14 @@ function SoundResponsiveOrb() {
         position: 'relative',
         width: '100%',
         height: '100%',
-        backgroundColor: 'hsl(0, 0%, 98%)', // Super pale gray background
-        borderRadius: 'inherit',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: 'hsl(0, 0%, 98%)',
         overflow: 'hidden',
+        borderRadius: 'inherit',
       }}
     >
-      {/* Orb / Sun */}
       <div
         style={{
           position: 'relative',
@@ -123,25 +117,22 @@ function SoundResponsiveOrb() {
           boxShadow: `0 0 ${glow}px ${glow}px rgba(255, 255, 200, 0.5)`,
         }}
       >
-        {/* Sun Rays */}
-        {micActive &&
-          Array.from({ length: 12 }).map((_, i) => (
-            <div
-              key={i}
-              style={{
-                position: 'absolute',
-                width: '10%',
-                height: '40%',
-                backgroundColor: 'rgba(255, 200, 0, 0.8)',
-                transform: `rotate(${i * 30 + rotation}deg) translate(150%, 0)`,
-                transformOrigin: 'center top',
-                borderRadius: '50%',
-              }}
-            ></div>
-          ))}
+        {Array.from({ length: 8 }).map((_, i) => (
+          <div
+            key={i}
+            style={{
+              position: 'absolute',
+              width: '20px',
+              height: '80px',
+              backgroundColor: 'rgba(255, 200, 0, 0.8)',
+              transform: `rotate(${i * 45 + rotation}deg) translate(150%, 0)`,
+              transformOrigin: 'center top',
+              borderRadius: '5px',
+            }}
+          ></div>
+        ))}
       </div>
 
-      {/* Particles */}
       {particles.map((particle) => (
         <div
           key={particle.id}
@@ -149,7 +140,7 @@ function SoundResponsiveOrb() {
             position: 'absolute',
             width: `${particle.size}px`,
             height: `${particle.size}px`,
-            backgroundColor: 'rgba(255, 200, 0, 0.8)', // Bright yellow
+            backgroundColor: 'rgba(255, 200, 0, 0.8)',
             borderRadius: '50%',
             opacity: particle.opacity,
             transform: `translate(${particle.x}px, ${particle.y}px)`,
@@ -158,7 +149,6 @@ function SoundResponsiveOrb() {
         ></div>
       ))}
 
-      {/* Button */}
       <button
         onClick={requestMicrophone}
         style={{
@@ -177,7 +167,6 @@ function SoundResponsiveOrb() {
           transition: 'background-color 0.3s ease',
         }}
       >
-        {/* Microphone Icon */}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="#FFF"
