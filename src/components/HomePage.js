@@ -49,7 +49,7 @@ const HomePage = () => {
       <div className="w-full max-w-md flex flex-col items-start gap-12">
         {/* Header Section */}
         <header className="w-full flex flex-col items-start gap-2">
-          <p className="text-black text-2xl font-normal leading-9 font-sans">
+          <p className="text-black text-3xl font-normal leading-9 font-sans">
             Hi my name is Jimmy and I'm a designer crafting a more playful internet from New York City.
           </p>
         </header>
