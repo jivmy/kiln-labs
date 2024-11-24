@@ -3,7 +3,6 @@ import SoundResponsiveOrb from '../components/SoundResponsiveOrb';
 
 const projects = [
   {
-    date: 'November 2024',
     title: 'Sound Orb',
     description: 'Orb that responds to sound input.',
   },
@@ -44,7 +43,6 @@ const HomePage = () => {
         {projects.map((project, index) => (
           <ProjectSection
             key={index}
-            date={project.date}
             title={project.title}
             description={project.description}
           >
