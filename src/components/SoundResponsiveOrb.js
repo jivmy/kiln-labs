@@ -71,7 +71,7 @@ function SoundResponsiveOrb() {
   }, []);
 
   // Adjusted scaling for better responsiveness
-  const scale = 1 + (micActive ? volume / 10 : 0.2); // More responsive scale factor
+  const scale = 1 + (micActive ? volume / 15 : 0.2); // More responsive scale factor
   const colorLightness = Math.min(95, 90 - volume / 20); // Keep pale tones only
 
   return (
