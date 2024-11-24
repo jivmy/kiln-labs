@@ -45,7 +45,7 @@ function SoundResponsiveOrb() {
 
         // Boosted sensitivity for scale
         const amplifiedVolume = Math.min(100, avgVolume * 5); // Amplified by factor of 5
-        setVolume((prev) => prev * 0.7 + amplifiedVolume * 0.3); // Smooth transition
+        setVolume((prev) => prev * 0.5 + amplifiedVolume * 0.5); // Faster response, quick decay
 
         animationRef.current = requestAnimationFrame(updateVolume);
       };
@@ -70,9 +70,9 @@ function SoundResponsiveOrb() {
     };
   }, []);
 
-  // Adjusted scaling for better responsiveness
-  const scale = 1 + (micActive ? volume / 20 : 0.2); // More responsive scale factor
-  const colorLightness = Math.min(95, 90 - volume / 20); // Keep pale tones only
+  // Adjusted scaling for more responsiveness and faster decay
+  const scale = 1 + (micActive ? volume / 15 : 0.2); // Larger scale factor
+  const colorLightness = Math.min(95, 90 - volume / 25); // Keep pale tones
 
   return (
     <div
@@ -97,7 +97,7 @@ function SoundResponsiveOrb() {
           borderRadius: '50%',
           backgroundColor: `hsl(50, 100%, ${colorLightness}%)`, // Pale yellow tones
           transform: `scale(${scale})`,
-          transition: 'transform 0.3s ease, background-color 0.3s ease',
+          transition: 'transform 0.1s ease, background-color 0.1s ease', // Faster decay
           animation: micActive ? 'pulse 1s infinite ease-in-out' : 'none',
           boxShadow: `0 0 10px 10px rgba(255, 255, 200, 0.5)`, // Static glow effect
         }}
@@ -129,7 +129,7 @@ function SoundResponsiveOrb() {
           width="24"
           height="24"
         >
-          <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66-1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
+          <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
         </svg>
       </button>
     </div>
