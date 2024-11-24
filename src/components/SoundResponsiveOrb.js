@@ -30,7 +30,9 @@ function SoundResponsiveOrb() {
     });
   };
 
-  const saturation = Math.min(50, Math.max(20, volume/ 0.2));
+  // Dynamically calculate saturation and scale
+  const saturation = Math.min(50, Math.max(20, volume / 0.2)); // Adjust saturation sensitivity
+  const scale = Math.min(1.5, Math.max(1, volume / 100)); // Adjust scale sensitivity
 
   return (
     <div
@@ -52,7 +54,8 @@ function SoundResponsiveOrb() {
           height: '200px',
           borderRadius: '50%',
           backgroundColor: `hsl(50, ${saturation}%, 50%)`,
-          transition: 'background-color 0.1s ease',
+          transform: `scale(${scale})`,
+          transition: 'transform 0.1s ease, background-color 0.1s ease',
         }}
       ></div>
 
