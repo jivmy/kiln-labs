@@ -3,15 +3,21 @@ import React, { useEffect, useState, useRef } from 'react';
 function SoundResponsiveOrb() {
   const [volume, setVolume] = useState(0);
   const [micActive, setMicActive] = useState(false);
-  const [audioContext, setAudioContext] = useState(null);
-  const [analyser, setAnalyser] = useState(null);
+  const audioContextRef = useRef(null);
+  const analyserRef = useRef(null);
+  const streamRef = useRef(null);
   const animationRef = useRef(null);
 
   const requestMicrophone = () => {
     if (micActive) {
       // Turn off microphone
-      if (audioContext) {
-        audioContext.close();
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+        audioContextRef.current = null;
+      }
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+        streamRef.current = null;
       }
       setMicActive(false);
       setVolume(0);
@@ -21,19 +27,20 @@ function SoundResponsiveOrb() {
 
     // Turn on microphone
     navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-      const newAudioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const newAnalyser = newAudioContext.createAnalyser();
-      const source = newAudioContext.createMediaStreamSource(stream);
-      newAnalyser.fftSize = 256;
-      source.connect(newAnalyser);
+      streamRef.current = stream;
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const analyser = audioContext.createAnalyser();
+      const source = audioContext.createMediaStreamSource(stream);
+      analyser.fftSize = 256;
+      source.connect(analyser);
 
-      setAudioContext(newAudioContext);
-      setAnalyser(newAnalyser);
+      audioContextRef.current = audioContext;
+      analyserRef.current = analyser;
 
-      const dataArray = new Uint8Array(newAnalyser.frequencyBinCount);
+      const dataArray = new Uint8Array(analyser.frequencyBinCount);
 
       const updateVolume = () => {
-        newAnalyser.getByteFrequencyData(dataArray);
+        analyser.getByteFrequencyData(dataArray);
         const avgVolume = dataArray.reduce((a, b) => a + b) / dataArray.length;
         setVolume((prev) => prev * 0.8 + Math.min(100, avgVolume * 2) * 0.2); // Smooth transition
         animationRef.current = requestAnimationFrame(updateVolume);
@@ -46,14 +53,18 @@ function SoundResponsiveOrb() {
 
   useEffect(() => {
     return () => {
+      // Clean up on unmount
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
-      if (audioContext) {
-        audioContext.close();
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+      }
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
       }
     };
-  }, [audioContext]);
+  }, []);
 
   const scale = 1 + (micActive ? volume / 30 : 0.2); // Increased scale factor
   const glow = micActive ? volume / 1.5 : 10; // Dynamic glow intensity
