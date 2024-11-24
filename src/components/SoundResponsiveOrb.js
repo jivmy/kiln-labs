@@ -57,8 +57,8 @@ function SoundResponsiveOrb() {
       <div
         style={{
           position: 'relative',
-          width: '50%',
-          height: '50%',
+          width: '25%',
+          height: '25%',
           borderRadius: '50%',
           backgroundColor: `hsl(50, 100%, ${colorLightness}%)`, // Soft yellow tones
           transform: `scale(${scale})`,
