@@ -45,8 +45,7 @@ function SoundResponsiveOrb() {
     };
   }, []);
 
-  // Dynamically calculate saturation, scale, and glow
-  const saturation = Math.min(100, Math.max(50, volume * 2)); // Increased saturation range
+  // Dynamically calculate scale and glow
   const scale = 1 + (volume / 128) * 0.5; // Smoother scaling
   const glow = Math.min(20, Math.max(0, volume / 5)); // Add a glow effect
 
@@ -56,7 +55,7 @@ function SoundResponsiveOrb() {
         position: 'relative',
         width: '100%', // Take the full width of the parent container
         height: '100%', // Take the full height of the parent container
-        backgroundColor: '#1a1a1a',
+        backgroundColor: 'hsl(0, 0%, 98%)', // Super pale gray
         borderRadius: 'inherit', // Match the parent's border radius if it has one
         display: 'flex',
         justifyContent: 'center',
@@ -70,10 +69,10 @@ function SoundResponsiveOrb() {
           width: '50%', // Orb takes 50% of the container's width
           height: '50%', // Orb is a square based on the container's height
           borderRadius: '50%',
-          backgroundColor: `hsl(${volume}, ${saturation}%, 50%)`,
+          backgroundColor: `hsl(50, 100%, 80%)`, // Pale yellow color
           transform: `scale(${scale})`,
           transition: 'transform 0.1s ease, background-color 0.1s ease',
-          boxShadow: `0 0 ${glow}px ${glow}px rgba(255, 255, 255, 0.3)`,
+          boxShadow: `0 0 ${glow}px ${glow}px rgba(255, 255, 200, 0.5)`, // Soft yellow glow
         }}
       ></div>
   
@@ -112,4 +111,3 @@ function SoundResponsiveOrb() {
 }
 
 export default SoundResponsiveOrb;
-

@@ -1,5 +1,5 @@
 import React from 'react';
-import SoundResponsiveOrb from '../components/SoundResponsiveOrb';
+import SoundResponsiveOrb from './SoundResponsiveOrb';
 
 const projects = [
   {
