@@ -14,7 +14,7 @@ function SoundResponsiveOrb() {
       const analyser = audioContext.createAnalyser();
       const source = audioContext.createMediaStreamSource(stream);
 
-      analyser.fftSize = 512; // Smaller FFT size for more sensitivity
+      analyser.fftSize = 256; // Smaller FFT size for more sensitivity
       source.connect(analyser);
 
       const dataArray = new Uint8Array(analyser.frequencyBinCount);
@@ -23,16 +23,16 @@ function SoundResponsiveOrb() {
         analyser.getByteFrequencyData(dataArray);
         const avgVolume = dataArray.reduce((a, b) => a + b) / dataArray.length;
 
-        // **Increased sensitivity** by amplifying the volume calculation
-        const amplifiedVolume = Math.min(100, avgVolume * 3);
+        // Increase sensitivity dramatically
+        const amplifiedVolume = Math.min(150, avgVolume * 5);
 
         // Smooth out the volume changes
-        const smoothedVolume = prevVolumeRef.current * 0.7 + amplifiedVolume * 0.3;
+        const smoothedVolume = prevVolumeRef.current * 0.6 + amplifiedVolume * 0.4;
         setVolume(smoothedVolume);
         prevVolumeRef.current = smoothedVolume;
 
         // Generate particles when volume exceeds a very low threshold
-        if (micActive && smoothedVolume > 2) {
+        if (micActive && smoothedVolume > 1) {
           generateParticles(smoothedVolume);
         }
 
@@ -47,13 +47,13 @@ function SoundResponsiveOrb() {
   };
 
   const generateParticles = (volume) => {
-    const newParticles = Array.from({ length: Math.ceil(volume / 5) }, () => ({
+    const newParticles = Array.from({ length: Math.ceil(volume / 10) }, () => ({
       id: Math.random().toString(36).substr(2, 9),
-      size: Math.random() * 10 + 5, // Random size between 5px and 15px
+      size: Math.random() * 8 + 2, // Random size between 2px and 10px
       x: 0, // Start at the orb's center
       y: 0,
-      dx: (Math.random() - 0.5) * 4, // Random x-direction velocity
-      dy: (Math.random() - 0.5) * 4, // Random y-direction velocity
+      dx: (Math.random() - 0.5) * 6, // Random x-direction velocity
+      dy: (Math.random() - 0.5) * 6, // Random y-direction velocity
       opacity: 1, // Start fully visible
     }));
 
@@ -90,37 +90,56 @@ function SoundResponsiveOrb() {
     };
   }, []);
 
-  // Dynamically calculate scale, color, and glow
-  const scale = micActive ? 0.5 + (volume / 100) * 1.5 : 1; // Default size 1 before mic input
-  const glow = micActive ? Math.min(30, volume / 5) : 10; // Default glow when inactive
-  const colorLightness = micActive ? 90 - (volume / 100) * 40 : 80; // Pale yellow before mic input
+  // Dynamically calculate scale, color, glow, and rotation
+  const scale = micActive ? 0.8 + (volume / 100) * 2 : 1; // Default size before mic input
+  const glow = micActive ? Math.min(50, volume / 2) : 10; // Glow intensity
+  const rotation = micActive ? volume * 0.5 : 0; // Rotate sun rays dynamically
+  const colorLightness = micActive ? 90 - (volume / 150) * 40 : 80; // Pale yellow
 
   return (
     <div
       style={{
         position: 'relative',
-        width: '100%', // Take the full width of the parent container
-        height: '100%', // Take the full height of the parent container
+        width: '100%',
+        height: '100%',
         backgroundColor: 'hsl(0, 0%, 98%)', // Super pale gray background
-        borderRadius: 'inherit', // Match the parent's border radius
+        borderRadius: 'inherit',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        overflow: 'hidden', // Prevent particles from spilling outside
+        overflow: 'hidden',
       }}
     >
-      {/* Orb */}
+      {/* Orb / Sun */}
       <div
         style={{
-          width: '50%', // Orb size based on the container
+          position: 'relative',
+          width: '50%',
           height: '50%',
           borderRadius: '50%',
-          backgroundColor: `hsl(50, 100%, ${colorLightness}%)`, // Dynamic pale yellow
+          backgroundColor: `hsl(50, 100%, ${colorLightness}%)`,
           transform: `scale(${scale})`,
           transition: 'transform 0.2s ease, background-color 0.2s ease',
-          boxShadow: `0 0 ${glow}px ${glow}px rgba(255, 255, 200, 0.5)`, // Glow effect
+          boxShadow: `0 0 ${glow}px ${glow}px rgba(255, 255, 200, 0.5)`,
         }}
-      ></div>
+      >
+        {/* Sun Rays */}
+        {micActive &&
+          Array.from({ length: 12 }).map((_, i) => (
+            <div
+              key={i}
+              style={{
+                position: 'absolute',
+                width: '10%',
+                height: '40%',
+                backgroundColor: 'rgba(255, 200, 0, 0.8)',
+                transform: `rotate(${i * 30 + rotation}deg) translate(150%, 0)`,
+                transformOrigin: 'center top',
+                borderRadius: '50%',
+              }}
+            ></div>
+          ))}
+      </div>
 
       {/* Particles */}
       {particles.map((particle) => (
@@ -130,11 +149,11 @@ function SoundResponsiveOrb() {
             position: 'absolute',
             width: `${particle.size}px`,
             height: `${particle.size}px`,
-            backgroundColor: 'rgba(255, 200, 0, 0.8)', // Bright yellow for particles
+            backgroundColor: 'rgba(255, 200, 0, 0.8)', // Bright yellow
             borderRadius: '50%',
             opacity: particle.opacity,
             transform: `translate(${particle.x}px, ${particle.y}px)`,
-            pointerEvents: 'none', // Prevent interaction with particles
+            pointerEvents: 'none',
           }}
         ></div>
       ))}
@@ -146,7 +165,7 @@ function SoundResponsiveOrb() {
           position: 'absolute',
           bottom: '8%',
           right: '8%',
-          width: '10%', // Button scales with container
+          width: '10%',
           height: '10%',
           borderRadius: '50%',
           backgroundColor: micActive ? '#4CAF50' : '#2196F3',
@@ -163,7 +182,7 @@ function SoundResponsiveOrb() {
           xmlns="http://www.w3.org/2000/svg"
           fill="#FFF"
           viewBox="0 0 24 24"
-          width="60%" // SVG scales dynamically
+          width="60%"
           height="60%"
         >
           <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
