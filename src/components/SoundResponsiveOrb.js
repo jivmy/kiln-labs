@@ -44,7 +44,7 @@ function SoundResponsiveOrb() {
         const avgVolume = dataArray.reduce((a, b) => a + b) / dataArray.length;
 
         // Boosted sensitivity for scale
-        const amplifiedVolume = Math.min(100, avgVolume * 2.5); // Amplified by factor of 2.5
+        const amplifiedVolume = Math.min(100, avgVolume * 2.5);
         setVolume((prev) => prev * 0.5 + amplifiedVolume * 0.5); // Faster response, quick decay
 
         animationRef.current = requestAnimationFrame(updateVolume);
@@ -71,12 +71,11 @@ function SoundResponsiveOrb() {
   }, []);
 
   // Outer orb scale and styling
-  const maxOuterScale = 1 + 100 / 20; // Max scale when volume is at its highest
   const scale = 1 + (micActive ? volume / 20 : 0.2); // Outer orb scale factor
   const colorLightness = Math.min(95, 90 - volume / 25); // Keep pale tones
 
-  // Inner orb scale: starts at 0, grows when outer orb reaches max scale
-  const innerScale = micActive && scale >= maxOuterScale ? 0.8 + Math.sin(Date.now() / 300) * 0.2 : 0;
+  // Inner orb scale: less sensitive and only appears when volume > 0
+  const innerScale = micActive && volume > 0 ? 0.5 + volume / 50 : 0; // Smaller response
 
   return (
     <div
@@ -101,8 +100,8 @@ function SoundResponsiveOrb() {
           borderRadius: '50%',
           backgroundColor: `hsl(50, 100%, ${colorLightness}%)`, // Pale yellow tones
           transform: `scale(${scale})`,
-          transition: 'transform 0.1s ease, background-color 0.1s ease', // Faster decay
-          boxShadow: `0 0 10px 10px rgba(255, 255, 200, 0.5)`, // Static glow effect
+          transition: 'transform 0.1s ease, background-color 0.1s ease',
+          boxShadow: `0 0 10px 10px rgba(255, 255, 200, 0.5)`,
         }}
       >
         {/* Inner Orb */}
@@ -111,12 +110,12 @@ function SoundResponsiveOrb() {
             position: 'absolute',
             top: '50%',
             left: '50%',
-            width: '50%',
-            height: '50%',
+            width: '30%', // Smaller size for inner orb
+            height: '30%',
             transform: `translate(-50%, -50%) scale(${innerScale})`,
             borderRadius: '50%',
             backgroundColor: `hsl(50, 100%, ${colorLightness - 10}%)`, // Slightly darker yellow
-            transition: 'transform 0.1s ease', // Smooth scaling
+            transition: 'transform 0.2s ease', // Smooth scaling
           }}
         ></div>
       </div>
