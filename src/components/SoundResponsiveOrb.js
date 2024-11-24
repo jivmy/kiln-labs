@@ -35,7 +35,7 @@ function SoundResponsiveOrb() {
     };
   }, []);
 
-  const scale = 1 + (micActive ? volume / 150 : 0.2); // Dynamic size
+  const scale = 1 + (micActive ? volume / 50 : 0.2); // Increased scale factor for larger max size
   const glow = micActive ? volume / 2 : 10; // Dynamic glow intensity
   const colorLightness = Math.min(95, 90 - volume / 10); // Keep pale values only
 
@@ -57,8 +57,8 @@ function SoundResponsiveOrb() {
       <div
         style={{
           position: 'relative',
-          width: '25%',
-          height: '25%',
+          width: '20%', // Smaller base size to allow room for scaling
+          height: '20%',
           borderRadius: '50%',
           backgroundColor: `hsl(50, 100%, ${colorLightness}%)`, // Soft yellow tones
           transform: `scale(${scale})`,
