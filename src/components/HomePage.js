@@ -5,14 +5,14 @@ const HomePage = () => {
   return (
     <div className="w-full min-h-screen bg-white flex justify-center items-center py-20 px-2 sm:px-0">
       <div className="w-full max-w-md flex flex-col items-start gap-12">
-        {/* Header Section */}
-        <header className="w-full flex flex-col items-start gap-2">
-          <p className="text-black text-3xl font-normal leading-9 font-sans">
-            Crafting a more playful internet from New York City — designer, prototyper, and rapper.
-          </p>
-        </header>
+     
+          <header className="w-full flex flex-col items-start gap-2">
+            <p className="text-black text-3xl font-normal leading-9 font-sans">
+              Crafting a more playful internet from New York City — designer, prototyper, and <em>Suno</em> rapper.
+            </p>
+          </header>
 
-        {/* Orb Section */}
+          {/* Orb Section */}
         <div className="w-full flex justify-center items-center">
           <div
             className="w-full relative"
