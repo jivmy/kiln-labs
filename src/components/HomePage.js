@@ -8,7 +8,7 @@ const HomePage = () => {
         {/* Header Section */}
         <header className="w-full flex flex-col items-start gap-2">
           <p className="text-black text-3xl font-normal leading-9 font-sans">
-            Hi, my name is Jimmy and I'm a designer crafting a more playful internet from New York City.
+            Crafting a more playful internet from New York City — designer, prototyper, and rapper.
           </p>
         </header>
 
