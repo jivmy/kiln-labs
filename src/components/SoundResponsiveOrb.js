@@ -44,13 +44,13 @@ function SoundResponsiveOrb() {
         analyser.getByteFrequencyData(dataArray);
         const avgVolume = dataArray.reduce((a, b) => a + b) / dataArray.length;
 
-        // Calculate relative change in volume
+        // Relative change
         const volumeChange = Math.abs(avgVolume - previousVolumeRef.current);
-        previousVolumeRef.current = avgVolume; // Update the previous volume
+        previousVolumeRef.current = avgVolume;
 
-        // Combine magnitude and relative change for the final effect
-        const combinedVolume = avgVolume * 0.7 + volumeChange * 0.3; // 70% absolute, 30% relative
-        setVolume((prev) => prev * 0.7 + combinedVolume * 0.3); // Smooth transition
+        // Combine magnitude and relative change for sensitivity
+        const combinedVolume = avgVolume * 0.8 + volumeChange * 0.5; // Boosted response
+        setVolume((prev) => prev * 0.4 + combinedVolume * 0.6); // Smoother but sensitive
 
         animationRef.current = requestAnimationFrame(updateVolume);
       };
@@ -75,14 +75,14 @@ function SoundResponsiveOrb() {
     };
   }, []);
 
-  // Outer orb scale based on combined volume
-  const scale = 1 + (micActive ? volume / 30 : 0.2); // Larger scale factor
-  const colorLightness = Math.min(95, 90 - volume / 30); // Keep pale tones
+  // Outer orb scale: More responsive
+  const scale = 1 + (micActive ? volume / 15 : 0.2); // Increased sensitivity
+  const colorLightness = Math.min(95, 90 - volume / 15); // Keep pale tones, more responsive
 
-  // Inner orb scale: less sensitive with a higher maximum size
-  const normalizedVolume = Math.min(1, volume / 150); // Normalize volume
+  // Inner orb scale: Smooth and higher sensitivity
+  const normalizedVolume = Math.min(1, volume / 75); // Normalize volume
   const innerScale =
-    micActive && volume > 1 ? 0.3 + Math.pow(normalizedVolume, 0.5) * 1.2 : 0; // Smooth scaling with higher max size
+    micActive && volume > 1 ? 0.3 + Math.pow(normalizedVolume, 0.7) * 1.8 : 0; // Higher response
 
   return (
     <div
