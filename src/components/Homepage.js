@@ -1,14 +1,15 @@
 import React from 'react';
+import SoundResponsiveOrb from '../components/SoundResponsiveOrb';
 
 const projects = [
   {
-    date: '11/22/24',
+    date: 'November 2024',
     title: 'Sound Orb',
     description: 'Orb that responds to sound input.',
   },
 ];
 
-const ProjectSection = ({ date, title, description }) => (
+const ProjectSection = ({ date, title, description, children }) => (
   <section className="w-full flex flex-col items-center gap-6">
     <div className="w-full flex flex-col items-start gap-2">
       <span className="w-full text-black text-xs font-bold opacity-30 font-sans">
@@ -19,7 +20,9 @@ const ProjectSection = ({ date, title, description }) => (
         {description}
       </p>
     </div>
-    <div className="w-full h-[400px] bg-[#D9D9D9] opacity-20 rounded-[40px]" />
+    <div className="w-full h-[400px] bg-[#D9D9D9] opacity-20 rounded-[40px] flex justify-center items-center">
+      {children}
+    </div>
   </section>
 );
 
@@ -44,7 +47,9 @@ const HomePage = () => {
             date={project.date}
             title={project.title}
             description={project.description}
-          />
+          >
+            {index === 0 && <SoundResponsiveOrb />} {/* Place Sound Orb in the first project */}
+          </ProjectSection>
         ))}
       </div>
     </div>
