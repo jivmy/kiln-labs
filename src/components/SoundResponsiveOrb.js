@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 function SoundResponsiveOrb() {
   const [volume, setVolume] = useState(0);
   const [micActive, setMicActive] = useState(false);
+  const [notes, setNotes] = useState([]);
   const animationRef = useRef(null);
   const prevVolumeRef = useRef(0);
 
@@ -30,6 +31,11 @@ function SoundResponsiveOrb() {
         setVolume(smoothedVolume);
         prevVolumeRef.current = smoothedVolume;
 
+        // Generate music notes when volume exceeds a threshold
+        if (micActive && smoothedVolume > 10) {
+          generateNote();
+        }
+
         animationRef.current = requestAnimationFrame(updateVolume);
       };
 
@@ -38,6 +44,25 @@ function SoundResponsiveOrb() {
       console.error('Microphone access error:', err);
       alert('Failed to access the microphone. Please allow access and try again.');
     });
+  };
+
+  const generateNote = () => {
+    const id = Math.random().toString(36).substr(2, 9); // Unique ID for the note
+    setNotes((prevNotes) => [
+      ...prevNotes,
+      {
+        id,
+        size: Math.random() * 20 + 10, // Random size between 10px and 30px
+        opacity: Math.random() * 0.5 + 0.5, // Random opacity between 0.5 and 1
+        x: Math.random() * 200 - 100, // Random x-axis movement
+        y: Math.random() * 200 - 100, // Random y-axis movement
+      },
+    ]);
+
+    // Remove the note after animation (3 seconds)
+    setTimeout(() => {
+      setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
+    }, 3000);
   };
 
   useEffect(() => {
@@ -80,6 +105,23 @@ function SoundResponsiveOrb() {
         }}
       ></div>
 
+      {/* Music Notes */}
+      {notes.map((note) => (
+        <div
+          key={note.id}
+          style={{
+            position: 'absolute',
+            width: `${note.size}px`,
+            height: `${note.size}px`,
+            backgroundColor: 'rgba(255, 255, 0, 0.8)', // Bright yellow for notes
+            borderRadius: '50%',
+            opacity: note.opacity,
+            transform: `translate(${note.x}px, ${note.y}px)`,
+            animation: 'float 3s ease-out',
+          }}
+        ></div>
+      ))}
+
       {/* Button */}
       <button
         onClick={requestMicrophone}
@@ -110,6 +152,19 @@ function SoundResponsiveOrb() {
           <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
         </svg>
       </button>
+
+      <style jsx>{`
+        @keyframes float {
+          0% {
+            transform: translate(0, 0);
+            opacity: 1;
+          }
+          100% {
+            transform: translate(0, -150px) scale(0.5);
+            opacity: 0;
+          }
+        }
+      `}</style>
     </div>
   );
 }
