@@ -48,8 +48,9 @@ function SoundResponsiveOrb() {
         const volumeChange = Math.abs(avgVolume - previousVolumeRef.current);
         previousVolumeRef.current = avgVolume; // Update the previous volume
 
-        // Update state with smoothed volume change
-        setVolume((prev) => prev * 0.7 + volumeChange * 0.3);
+        // Combine magnitude and relative change for the final effect
+        const combinedVolume = avgVolume * 0.7 + volumeChange * 0.3; // 70% absolute, 30% relative
+        setVolume((prev) => prev * 0.7 + combinedVolume * 0.3); // Smooth transition
 
         animationRef.current = requestAnimationFrame(updateVolume);
       };
@@ -74,13 +75,14 @@ function SoundResponsiveOrb() {
     };
   }, []);
 
-  // Outer orb scale based on relative volume change
-  const scale = 1 + (micActive ? volume / 50 : 0.2); // Responsive to volume changes
-  const colorLightness = Math.min(95, 90 - volume / 25); // Keep pale tones
+  // Outer orb scale based on combined volume
+  const scale = 1 + (micActive ? volume / 30 : 0.2); // Larger scale factor
+  const colorLightness = Math.min(95, 90 - volume / 30); // Keep pale tones
 
-  // Inner orb scale: responds less sensitively
+  // Inner orb scale: less sensitive with a higher maximum size
+  const normalizedVolume = Math.min(1, volume / 150); // Normalize volume
   const innerScale =
-    micActive && volume > 1 ? 0.3 + Math.pow(volume / 100, 0.5) * 1.2 : 0; // Smooth scaling with a higher max size
+    micActive && volume > 1 ? 0.3 + Math.pow(normalizedVolume, 0.5) * 1.2 : 0; // Smooth scaling with higher max size
 
   return (
     <div
