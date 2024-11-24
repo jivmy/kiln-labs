@@ -19,8 +19,26 @@ const ProjectSection = ({ date, title, description, children }) => (
         {description}
       </p>
     </div>
-    <div className="w-full h-[400px] bg-[#D9D9D9] opacity-20 rounded-[40px] flex justify-center items-center">
-      {children}
+    <div className="w-full flex justify-center items-center">
+      {/* Aspect Ratio Container */}
+      <div
+        className="w-full relative"
+        style={{
+          paddingTop: '100%', // 1:1 aspect ratio
+          borderRadius: '40px',
+          backgroundColor: '#f3f3f3', // Optional background for visibility
+          overflow: 'hidden',
+        }}
+      >
+        <div
+          className="absolute inset-0 flex justify-center items-center"
+          style={{
+            borderRadius: 'inherit', // Matches the outer container’s border-radius
+          }}
+        >
+          {children}
+        </div>
+      </div>
     </div>
   </section>
 );

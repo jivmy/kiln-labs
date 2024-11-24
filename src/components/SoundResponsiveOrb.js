@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 function SoundResponsiveOrb() {
   const [volume, setVolume] = useState(0);
   const [micActive, setMicActive] = useState(false);
+  const animationRef = useRef(null);
+  const prevVolumeRef = useRef(0);
 
   const requestMicrophone = () => {
     navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
@@ -11,7 +13,7 @@ function SoundResponsiveOrb() {
       const analyser = audioContext.createAnalyser();
       const source = audioContext.createMediaStreamSource(stream);
 
-      analyser.fftSize = 256;
+      analyser.fftSize = 1024; // Increased for more detailed frequency data
       source.connect(analyser);
 
       const dataArray = new Uint8Array(analyser.frequencyBinCount);
@@ -19,8 +21,13 @@ function SoundResponsiveOrb() {
       const updateVolume = () => {
         analyser.getByteFrequencyData(dataArray);
         const avgVolume = dataArray.reduce((a, b) => a + b) / dataArray.length;
-        setVolume(avgVolume);
-        requestAnimationFrame(updateVolume);
+        
+        // Smooth out the volume changes
+        const smoothedVolume = prevVolumeRef.current * 0.8 + avgVolume * 0.2;
+        setVolume(smoothedVolume);
+        prevVolumeRef.current = smoothedVolume;
+
+        animationRef.current = requestAnimationFrame(updateVolume);
       };
 
       updateVolume();
@@ -30,66 +37,79 @@ function SoundResponsiveOrb() {
     });
   };
 
-  // Dynamically calculate saturation and scale
-  const saturation = Math.min(50, Math.max(20, volume / 0.2)); // Adjust saturation sensitivity
-  const scale = Math.min(2, Math.max(1, volume / 25));  // Adjust scale sensitivity
+  useEffect(() => {
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, []);
+
+  // Dynamically calculate saturation, scale, and glow
+  const saturation = Math.min(100, Math.max(50, volume * 2)); // Increased saturation range
+  const scale = 1 + (volume / 128) * 0.5; // Smoother scaling
+  const glow = Math.min(20, Math.max(0, volume / 5)); // Add a glow effect
 
   return (
     <div
       style={{
         position: 'relative',
-        width: '400px',
-        height: '400px',
-        backgroundColor: '#D9D9D9',
-        borderRadius: '40px',
+        width: '100%', // Take the full width of the parent container
+        height: '100%', // Take the full height of the parent container
+        backgroundColor: '#1a1a1a',
+        borderRadius: 'inherit', // Match the parent's border radius if it has one
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        overflow: 'hidden',
       }}
     >
       {/* Orb */}
       <div
         style={{
-          width: '200px',
-          height: '200px',
+          width: '50%', // Orb takes 50% of the container's width
+          height: '50%', // Orb is a square based on the container's height
           borderRadius: '50%',
-          backgroundColor: `hsl(50, ${saturation}%, 50%)`,
+          backgroundColor: `hsl(${volume}, ${saturation}%, 50%)`,
           transform: `scale(${scale})`,
           transition: 'transform 0.1s ease, background-color 0.1s ease',
+          boxShadow: `0 0 ${glow}px ${glow}px rgba(255, 255, 255, 0.3)`,
         }}
       ></div>
-
+  
       {/* Button */}
       <button
         onClick={requestMicrophone}
         style={{
           position: 'absolute',
-          bottom: '16px',
-          right: '16px',
-          width: '24px',
-          height: '24px',
-          borderRadius: '4px',
-          backgroundColor: '#000',
+          bottom: '8%',
+          right: '8%',
+          width: '10%', // Button scales with container
+          height: '10%',
+          borderRadius: '50%',
+          backgroundColor: micActive ? '#4CAF50' : '#2196F3',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
           border: 'none',
           cursor: 'pointer',
+          transition: 'background-color 0.3s ease',
         }}
       >
-        {/* Play Icon */}
+        {/* Microphone Icon */}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="#FFF"
           viewBox="0 0 24 24"
-          width="16"
-          height="16"
+          width="60%" // SVG scales dynamically
+          height="60%"
         >
-          <path d="M8 5v14l11-7z" />
+          <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
         </svg>
       </button>
     </div>
-  );
+  );  
 }
 
 export default SoundResponsiveOrb;
+
