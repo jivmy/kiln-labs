@@ -30,7 +30,7 @@ function SoundResponsiveOrb() {
     });
   };
 
-  const saturation = Math.min(50, Math.max(20, volume / 2));
+  const saturation = Math.min(50, Math.max(20, volume));
 
   return (
     <div
