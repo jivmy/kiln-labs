@@ -75,8 +75,9 @@ function SoundResponsiveOrb() {
   const colorLightness = Math.min(95, 90 - volume / 25); // Keep pale tones
 
   // Inner orb scale: less sensitive and only appears when volume > 0
-  const innerScale = micActive && volume > 0 ? 0.5 + volume / 100 : 0; // Smaller response
-
+  const normalizedVolume = Math.min(1, volume / 100); // Normalize volume to a range of 0 to 1
+  const innerScale = micActive && volume > 0 ? 0.5 + Math.pow(normalizedVolume, 0.5) * 0.5 : 0; // Smooth curve
+  
   return (
     <div
       style={{
