@@ -89,7 +89,7 @@ function SoundResponsiveOrb() {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        overflow: 'hidden',
+        overflow: 'hidden', // Ensures notes don’t overflow outside
       }}
     >
       {/* Orb */}
@@ -113,7 +113,7 @@ function SoundResponsiveOrb() {
             position: 'absolute',
             width: `${note.size}px`,
             height: `${note.size}px`,
-            backgroundColor: 'rgba(255, 255, 0, 0.8)', // Bright yellow for notes
+            backgroundColor: 'rgba(255, 215, 0, 0.8)', // Golden yellow for notes
             borderRadius: '50%',
             opacity: note.opacity,
             transform: `translate(${note.x}px, ${note.y}px)`,
