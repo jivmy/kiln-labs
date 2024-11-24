@@ -25,7 +25,7 @@ const ProjectSection = ({ date, title, description, children }) => (
         className="w-full relative"
         style={{
           paddingTop: '100%', // 1:1 aspect ratio
-          borderRadius: '40px',
+          borderRadius: '24px',
           backgroundColor: '#f3f3f3', // Optional background for visibility
           overflow: 'hidden',
         }}
