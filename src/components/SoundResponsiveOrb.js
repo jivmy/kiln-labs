@@ -37,7 +37,7 @@ function SoundResponsiveOrb() {
 
   const scale = 1 + (micActive ? volume / 150 : 0.2); // Dynamic size
   const glow = micActive ? volume / 2 : 10; // Dynamic glow intensity
-  const colorLightness = micActive ? 90 - volume / 2 : 80; // Dynamic color
+  const colorLightness = Math.min(95, 90 - volume / 10); // Keep pale values only
 
   return (
     <div
@@ -60,7 +60,7 @@ function SoundResponsiveOrb() {
           width: '50%',
           height: '50%',
           borderRadius: '50%',
-          backgroundColor: `hsl(50, 100%, ${colorLightness}%)`,
+          backgroundColor: `hsl(50, 100%, ${colorLightness}%)`, // Soft yellow tones
           transform: `scale(${scale})`,
           transition: 'transform 0.2s ease, background-color 0.2s ease',
           animation: micActive ? 'pulse 1s infinite ease-in-out' : 'none',
