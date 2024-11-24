@@ -7,6 +7,7 @@ function SoundResponsiveOrb() {
   const analyserRef = useRef(null);
   const streamRef = useRef(null);
   const animationRef = useRef(null);
+  const previousVolumeRef = useRef(0); // Track the previous volume
 
   const requestMicrophone = () => {
     if (micActive) {
@@ -43,9 +44,12 @@ function SoundResponsiveOrb() {
         analyser.getByteFrequencyData(dataArray);
         const avgVolume = dataArray.reduce((a, b) => a + b) / dataArray.length;
 
-        // Boosted sensitivity for scale
-        const amplifiedVolume = Math.min(100, avgVolume * 2.5);
-        setVolume((prev) => prev * 0.5 + amplifiedVolume * 0.5); // Faster response, quick decay
+        // Calculate relative change in volume
+        const volumeChange = Math.abs(avgVolume - previousVolumeRef.current);
+        previousVolumeRef.current = avgVolume; // Update the previous volume
+
+        // Update state with smoothed volume change
+        setVolume((prev) => prev * 0.7 + volumeChange * 0.3);
 
         animationRef.current = requestAnimationFrame(updateVolume);
       };
@@ -70,13 +74,13 @@ function SoundResponsiveOrb() {
     };
   }, []);
 
-  // Outer orb scale and styling
-  const scale = 1 + (micActive ? volume / 20 : 0.2); // Outer orb scale factor
+  // Outer orb scale based on relative volume change
+  const scale = 1 + (micActive ? volume / 50 : 0.2); // Responsive to volume changes
   const colorLightness = Math.min(95, 90 - volume / 25); // Keep pale tones
 
-  // Inner orb scale: less sensitive with a higher maximum size
-  const normalizedVolume = Math.min(1, volume / 100); // Normalize volume to a range of 0 to 1
-  const innerScale = micActive && volume > 0 ? 0.5 + Math.pow(normalizedVolume, 0.3) * 1.5 : 0; // Less sensitive, higher max
+  // Inner orb scale: responds less sensitively
+  const innerScale =
+    micActive && volume > 1 ? 0.3 + Math.pow(volume / 100, 0.5) * 1.2 : 0; // Smooth scaling with a higher max size
 
   return (
     <div
