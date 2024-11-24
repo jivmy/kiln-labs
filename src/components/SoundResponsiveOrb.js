@@ -3,16 +3,16 @@ import React, { useEffect, useState, useRef } from 'react';
 function SoundResponsiveOrb() {
   const [volume, setVolume] = useState(0);
   const [micActive, setMicActive] = useState(false);
-  const [position, setPosition] = useState({ x: 0, y: 0 }); // Position of the orb
+  const [position, setPosition] = useState({ x: 0, y: 0 });
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
   const streamRef = useRef(null);
   const animationRef = useRef(null);
-  const recognitionRef = useRef(null); // For speech recognition
+  const recognitionRef = useRef(null);
 
   const requestMicrophone = () => {
     if (micActive) {
-      // Turn off microphone
+      // Turn off microphone and speech recognition
       if (audioContextRef.current) {
         audioContextRef.current.close();
         audioContextRef.current = null;
@@ -27,7 +27,7 @@ function SoundResponsiveOrb() {
       }
       setMicActive(false);
       setVolume(0);
-      setPosition({ x: 0, y: 0 }); // Reset position
+      setPosition({ x: 0, y: 0 });
       cancelAnimationFrame(animationRef.current);
       return;
     }
@@ -49,17 +49,19 @@ function SoundResponsiveOrb() {
       const updateVolume = () => {
         analyser.getByteFrequencyData(dataArray);
         const avgVolume = dataArray.reduce((a, b) => a + b) / dataArray.length;
-        setVolume((prev) => prev * 0.5 + avgVolume * 0.5); // Smoother response
-
+        setVolume(avgVolume);
         animationRef.current = requestAnimationFrame(updateVolume);
       };
 
       updateVolume();
       setMicActive(true);
 
-      // Initialize speech recognition
+      // Start speech recognition
       initializeSpeechRecognition();
-    }).catch(() => alert('Microphone access denied.'));
+    }).catch((err) => {
+      console.error('Microphone access error:', err);
+      alert('Microphone access denied.');
+    });
   };
 
   const initializeSpeechRecognition = () => {
@@ -67,16 +69,17 @@ function SoundResponsiveOrb() {
       window.SpeechRecognition || window.webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      alert('Speech recognition is not supported in this browser.');
+      console.error('Speech recognition is not supported in this browser.');
       return;
     }
 
     const recognition = new SpeechRecognition();
     recognition.lang = 'en-US';
-    recognition.interimResults = false; // Only finalized results
-    recognition.continuous = true; // Keep listening
+    recognition.interimResults = false;
+    recognition.continuous = true;
     recognition.onresult = (event) => {
       const transcript = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
+      console.log('Recognized command:', transcript); // Debug speech input
       handleDirectionCommand(transcript);
     };
     recognition.onerror = (err) => console.error('Speech recognition error:', err);
@@ -85,7 +88,7 @@ function SoundResponsiveOrb() {
   };
 
   const handleDirectionCommand = (command) => {
-    const moveDistance = 50; // Distance the orb moves in a direction
+    const moveDistance = 50;
     setPosition((prev) => {
       switch (command) {
         case 'left':
@@ -97,6 +100,7 @@ function SoundResponsiveOrb() {
         case 'down':
           return { x: prev.x, y: prev.y + moveDistance };
         default:
+          console.warn(`Unrecognized command: ${command}`); // Debug unrecognized commands
           return prev;
       }
     });
@@ -104,7 +108,7 @@ function SoundResponsiveOrb() {
 
   useEffect(() => {
     return () => {
-      // Clean up on unmount
+      // Clean up resources
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
@@ -120,8 +124,7 @@ function SoundResponsiveOrb() {
     };
   }, []);
 
-  // Orb scaling
-  const scale = 1 + (micActive ? volume / 20 : 0.2); // Outer orb sensitivity
+  const scale = 1 + (micActive ? volume / 100 : 0.2);
 
   return (
     <div
@@ -145,10 +148,10 @@ function SoundResponsiveOrb() {
           width: '15%',
           height: '15%',
           borderRadius: '50%',
-          backgroundColor: 'hsl(50, 100%, 90%)', // Pale yellow
+          backgroundColor: 'hsl(50, 100%, 90%)',
           transform: `scale(${scale})`,
           transition: 'transform 0.1s ease, left 0.2s ease, top 0.2s ease',
-          boxShadow: '0 0 10px 10px rgba(255, 255, 200, 0.5)', // Glow effect
+          boxShadow: '0 0 10px 10px rgba(255, 255, 200, 0.5)',
         }}
       ></div>
 
