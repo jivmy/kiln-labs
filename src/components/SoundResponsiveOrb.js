@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 function SoundResponsiveOrb() {
   const [volume, setVolume] = useState(0);
   const [micActive, setMicActive] = useState(false);
+  const [particles, setParticles] = useState([]);
   const animationRef = useRef(null);
   const prevVolumeRef = useRef(0);
 
@@ -22,13 +23,18 @@ function SoundResponsiveOrb() {
         analyser.getByteFrequencyData(dataArray);
         const avgVolume = dataArray.reduce((a, b) => a + b) / dataArray.length;
 
-        // Increase sensitivity by amplifying the volume calculation
-        const amplifiedVolume = Math.min(100, avgVolume * 1.5);
+        // **Increased sensitivity** by amplifying the volume calculation
+        const amplifiedVolume = Math.min(100, avgVolume * 3);
 
         // Smooth out the volume changes
-        const smoothedVolume = prevVolumeRef.current * 0.8 + amplifiedVolume * 0.2;
+        const smoothedVolume = prevVolumeRef.current * 0.7 + amplifiedVolume * 0.3;
         setVolume(smoothedVolume);
         prevVolumeRef.current = smoothedVolume;
+
+        // Generate particles when volume exceeds a very low threshold
+        if (micActive && smoothedVolume > 2) {
+          generateParticles(smoothedVolume);
+        }
 
         animationRef.current = requestAnimationFrame(updateVolume);
       };
@@ -39,6 +45,42 @@ function SoundResponsiveOrb() {
       alert('Failed to access the microphone. Please allow access and try again.');
     });
   };
+
+  const generateParticles = (volume) => {
+    const newParticles = Array.from({ length: Math.ceil(volume / 5) }, () => ({
+      id: Math.random().toString(36).substr(2, 9),
+      size: Math.random() * 10 + 5, // Random size between 5px and 15px
+      x: 0, // Start at the orb's center
+      y: 0,
+      dx: (Math.random() - 0.5) * 4, // Random x-direction velocity
+      dy: (Math.random() - 0.5) * 4, // Random y-direction velocity
+      opacity: 1, // Start fully visible
+    }));
+
+    setParticles((prevParticles) => [...prevParticles, ...newParticles]);
+
+    // Remove particles after their lifespan (2 seconds)
+    setTimeout(() => {
+      setParticles((prevParticles) =>
+        prevParticles.filter((p) => !newParticles.some((np) => np.id === p.id))
+      );
+    }, 2000);
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setParticles((prevParticles) =>
+        prevParticles.map((p) => ({
+          ...p,
+          x: p.x + p.dx * 2, // Move particle in x-direction
+          y: p.y + p.dy * 2, // Move particle in y-direction
+          opacity: Math.max(0, p.opacity - 0.05), // Gradually fade out
+        }))
+      );
+    }, 50);
+
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -64,7 +106,7 @@ function SoundResponsiveOrb() {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        overflow: 'hidden', // Prevent visual artifacts
+        overflow: 'hidden', // Prevent particles from spilling outside
       }}
     >
       {/* Orb */}
@@ -79,6 +121,23 @@ function SoundResponsiveOrb() {
           boxShadow: `0 0 ${glow}px ${glow}px rgba(255, 255, 200, 0.5)`, // Glow effect
         }}
       ></div>
+
+      {/* Particles */}
+      {particles.map((particle) => (
+        <div
+          key={particle.id}
+          style={{
+            position: 'absolute',
+            width: `${particle.size}px`,
+            height: `${particle.size}px`,
+            backgroundColor: 'rgba(255, 200, 0, 0.8)', // Bright yellow for particles
+            borderRadius: '50%',
+            opacity: particle.opacity,
+            transform: `translate(${particle.x}px, ${particle.y}px)`,
+            pointerEvents: 'none', // Prevent interaction with particles
+          }}
+        ></div>
+      ))}
 
       {/* Button */}
       <button
