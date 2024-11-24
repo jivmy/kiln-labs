@@ -32,7 +32,7 @@ function SoundResponsiveOrb() {
 
   // Dynamically calculate saturation and scale
   const saturation = Math.min(50, Math.max(20, volume / 0.2)); // Adjust saturation sensitivity
-  const scale = Math.min(1.5, Math.max(1, volume / 100)); // Adjust scale sensitivity
+  const scale = Math.min(2, Math.max(1, volume / 25));  // Adjust scale sensitivity
 
   return (
     <div
