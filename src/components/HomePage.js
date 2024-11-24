@@ -8,7 +8,7 @@ const HomePage = () => {
      
           <header className="w-full flex flex-col items-start gap-2">
             <p className="text-black text-3xl font-normal leading-9 font-sans">
-              Crafting a more playful internet from New York City — designer, prototyper, and <em>Suno</em> rapper.
+              Crafting a more playful internet from New York City — designer, prototyper, and <em><a href="https://suno.ai" className="underline" target="_blank" rel="noopener noreferrer">Suno</a></em> rapper.
             </p>
           </header>
 
@@ -26,7 +26,7 @@ const HomePage = () => {
             <div
               className="absolute inset-0 flex justify-center items-center"
               style={{
-                borderRadius: 'inherit', // Matches the outer container’s border-radius
+                borderRadius: 'inherit', // Matches the outer container's border-radius
               }}
             >
               <SoundResponsiveOrb />
