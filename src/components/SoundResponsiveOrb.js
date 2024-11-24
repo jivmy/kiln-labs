@@ -44,7 +44,7 @@ function SoundResponsiveOrb() {
         const avgVolume = dataArray.reduce((a, b) => a + b) / dataArray.length;
 
         // Boosted sensitivity for scale
-        const amplifiedVolume = Math.min(100, avgVolume * 5); // Amplified by factor of 5
+        const amplifiedVolume = Math.min(100, avgVolume * 2.5); // Amplified by factor of 5
         setVolume((prev) => prev * 0.5 + amplifiedVolume * 0.5); // Faster response, quick decay
 
         animationRef.current = requestAnimationFrame(updateVolume);
@@ -71,7 +71,7 @@ function SoundResponsiveOrb() {
   }, []);
 
   // Adjusted scaling for more responsiveness and faster decay
-  const scale = 1 + (micActive ? volume / 15 : 0.2); // Larger scale factor
+  const scale = 1 + (micActive ? volume / 20 : 0.2); // Larger scale factor
   const colorLightness = Math.min(95, 90 - volume / 25); // Keep pale tones
 
   return (
