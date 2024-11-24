@@ -3,22 +3,39 @@ import React, { useEffect, useState, useRef } from 'react';
 function SoundResponsiveOrb() {
   const [volume, setVolume] = useState(0);
   const [micActive, setMicActive] = useState(false);
+  const [audioContext, setAudioContext] = useState(null);
+  const [analyser, setAnalyser] = useState(null);
   const animationRef = useRef(null);
 
   const requestMicrophone = () => {
-    navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const analyser = audioContext.createAnalyser();
-      const source = audioContext.createMediaStreamSource(stream);
-      analyser.fftSize = 256;
-      source.connect(analyser);
+    if (micActive) {
+      // Turn off microphone
+      if (audioContext) {
+        audioContext.close();
+      }
+      setMicActive(false);
+      setVolume(0);
+      cancelAnimationFrame(animationRef.current);
+      return;
+    }
 
-      const dataArray = new Uint8Array(analyser.frequencyBinCount);
+    // Turn on microphone
+    navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+      const newAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const newAnalyser = newAudioContext.createAnalyser();
+      const source = newAudioContext.createMediaStreamSource(stream);
+      newAnalyser.fftSize = 256;
+      source.connect(newAnalyser);
+
+      setAudioContext(newAudioContext);
+      setAnalyser(newAnalyser);
+
+      const dataArray = new Uint8Array(newAnalyser.frequencyBinCount);
 
       const updateVolume = () => {
-        analyser.getByteFrequencyData(dataArray);
+        newAnalyser.getByteFrequencyData(dataArray);
         const avgVolume = dataArray.reduce((a, b) => a + b) / dataArray.length;
-        setVolume(Math.min(100, avgVolume * 2)); // Boost sensitivity
+        setVolume((prev) => prev * 0.8 + Math.min(100, avgVolume * 2) * 0.2); // Smooth transition
         animationRef.current = requestAnimationFrame(updateVolume);
       };
 
@@ -32,11 +49,14 @@ function SoundResponsiveOrb() {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
+      if (audioContext) {
+        audioContext.close();
+      }
     };
-  }, []);
+  }, [audioContext]);
 
-  const scale = 1 + (micActive ? volume / 30 : 0.2); // Increased scale factor for much larger size
-  const glow = micActive ? volume / 1.5 : 10; // Brighter and larger glow
+  const scale = 1 + (micActive ? volume / 30 : 0.2); // Increased scale factor
+  const glow = micActive ? volume / 1.5 : 10; // Dynamic glow intensity
   const colorLightness = Math.min(95, 90 - volume / 15); // Keep pale tones
 
   return (
@@ -57,12 +77,12 @@ function SoundResponsiveOrb() {
       <div
         style={{
           position: 'relative',
-          width: '25%', // Smaller base size for room to grow
-          height: '25%',
+          width: '15%', // Smaller base size for room to grow
+          height: '15%',
           borderRadius: '50%',
           backgroundColor: `hsl(50, 100%, ${colorLightness}%)`, // Pale yellow tones
           transform: `scale(${scale})`,
-          transition: 'transform 0.2s ease, background-color 0.2s ease',
+          transition: 'transform 0.3s ease, background-color 0.3s ease',
           animation: micActive ? 'pulse 1s infinite ease-in-out' : 'none',
           boxShadow: `0 0 ${glow}px ${glow}px rgba(255, 255, 200, 0.5)`,
         }}
