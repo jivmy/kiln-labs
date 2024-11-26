@@ -49,8 +49,8 @@ function SoundOrb() {
         previousVolumeRef.current = avgVolume;
 
         // Combine magnitude and relative change for sensitivity
-        const combinedVolume = avgVolume * 0.8 + volumeChange * 0.5; // Boosted response
-        setVolume((prev) => prev * 0.4 + combinedVolume * 0.6); // Smoother but sensitive
+        const combinedVolume = avgVolume * 1.2 + volumeChange * 0.8; // Amplified response
+        setVolume((prev) => prev * 0.3 + combinedVolume * 0.7); // More dynamic smoothing
 
         animationRef.current = requestAnimationFrame(updateVolume);
       };
@@ -75,15 +75,15 @@ function SoundOrb() {
     };
   }, []);
 
-  // Outer orb scale: More sensitive
-  const scale = 1 + (micActive ? volume / 10 : 0.2); // Increased sensitivity for the outer orb
-  const colorLightness = Math.min(95, 90 - volume / 10); // Slightly faster lightness change for outer orb
+  // Outer orb scale: Very sensitive
+  const scale = 1 + (micActive ? volume / 5 : 0.2); // Drastically increased sensitivity
+  const colorLightness = Math.min(95, 90 - volume / 5); // Faster changes in lightness
 
-  // Inner orb scale: Reduced sensitivity and lower magnitude
-  const normalizedVolume = Math.min(1, volume / 100); // Lower normalization for less sensitivity
+  // Inner orb scale: Very sensitive but with exponential decay
+  const normalizedVolume = Math.min(1, volume / 50); // Increased normalization for sensitivity
   const innerScale =
     micActive && volume > 1
-      ? 0.2 + Math.pow(normalizedVolume, 1.5) * 0.8 // Reduced response and sensitivity
+      ? 0.5 + Math.pow(normalizedVolume, 0.5) * 2.5 // Much higher sensitivity
       : 0;
 
   return (
@@ -109,8 +109,8 @@ function SoundOrb() {
           borderRadius: '50%',
           backgroundColor: `hsl(50, 100%, ${colorLightness}%)`, // Pale yellow tones
           transform: `scale(${scale})`,
-          transition: 'transform 0.1s ease, background-color 0.1s ease',
-          boxShadow: `0 0 10px 10px rgba(255, 255, 200, 0.5)`,
+          transition: 'transform 0.05s ease, background-color 0.05s ease',
+          boxShadow: `0 0 15px 15px rgba(255, 255, 200, 0.7)`,
         }}
       >
         {/* Inner Orb */}
@@ -124,7 +124,7 @@ function SoundOrb() {
             transform: `translate(-50%, -50%) scale(${innerScale})`,
             borderRadius: '50%',
             backgroundColor: `hsl(50, 100%, ${colorLightness - 10}%)`, // Slightly darker yellow
-            transition: 'transform 0.2s ease', // Smooth scaling
+            transition: 'transform 0.1s ease', // Faster scaling
           }}
         ></div>
       </div>
