@@ -104,7 +104,7 @@ function SoundOrb1() {
           width: `${15 * orbScale}%`, // Dynamically scale orb size
           height: `${15 * orbScale}%`,
           borderRadius: '50%',
-          backgroundColor: 'hsl(50, 100%, 88``%)',
+          backgroundColor: 'hsl(50, 100%, 88%)',
           transition: 'transform 0.1s ease',
         }}
       ></div>
