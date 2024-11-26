@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 
-function SoundResponsiveOrb() {
+function SoundOrb0() {
   const [volume, setVolume] = useState(0);
   const [micActive, setMicActive] = useState(false);
   const audioContextRef = useRef(null);
@@ -160,4 +160,4 @@ function SoundResponsiveOrb() {
   );
 }
 
-export default SoundResponsiveOrb;
+export default SoundOrb0;
