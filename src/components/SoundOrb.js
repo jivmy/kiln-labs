@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 
-function SoundOrb0() {
+function SoundOrb() {
   const [volume, setVolume] = useState(0);
   const [micActive, setMicActive] = useState(false);
   const audioContextRef = useRef(null);
@@ -75,14 +75,16 @@ function SoundOrb0() {
     };
   }, []);
 
-  // Outer orb scale: More responsive
-  const scale = 1 + (micActive ? volume / 15 : 0.2); // Increased sensitivity
-  const colorLightness = Math.min(95, 90 - volume / 15); // Keep pale tones, more responsive
+  // Outer orb scale: More sensitive
+  const scale = 1 + (micActive ? volume / 10 : 0.2); // Increased sensitivity for the outer orb
+  const colorLightness = Math.min(95, 90 - volume / 10); // Slightly faster lightness change for outer orb
 
-  // Inner orb scale: Smooth and higher sensitivity
-  const normalizedVolume = Math.min(1, volume / 75); // Normalize volume
+  // Inner orb scale: Reduced sensitivity and lower magnitude
+  const normalizedVolume = Math.min(1, volume / 100); // Lower normalization for less sensitivity
   const innerScale =
-    micActive && volume > 1 ? 0.3 + Math.pow(normalizedVolume, 0.7) * 1.8 : 0; // Higher response
+    micActive && volume > 1
+      ? 0.2 + Math.pow(normalizedVolume, 1.5) * 0.8 // Reduced response and sensitivity
+      : 0;
 
   return (
     <div
@@ -160,4 +162,4 @@ function SoundOrb0() {
   );
 }
 
-export default SoundOrb0;
+export default SoundOrb;

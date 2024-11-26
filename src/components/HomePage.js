@@ -1,6 +1,5 @@
 import React from 'react';
-import SoundOrb0 from './SoundOrb0';
-import SoundOrb1 from './SoundOrb1';
+import SoundOrb from './SoundOrb';
 
 const HomePage = () => {
   return (
@@ -30,28 +29,7 @@ const HomePage = () => {
                 borderRadius: 'inherit', // Matches the outer container's border-radius
               }}
             >
-              <SoundOrb0 />
-            </div>
-          </div>
-        </div>
-
-        <div className="w-full flex justify-center items-center">
-          <div
-            className="w-full relative"
-            style={{
-              paddingTop: '100%', // 1:1 aspect ratio
-              borderRadius: '24px',
-              backgroundColor: '#f3f3f3', // Optional background for visibility
-              overflow: 'hidden',
-            }}
-          >
-            <div
-              className="absolute inset-0 flex justify-center items-center"
-              style={{
-                borderRadius: 'inherit', // Matches the outer container's border-radius
-              }}
-            >
-              <SoundOrb1 />
+              <SoundOrb/>
             </div>
           </div>
         </div>
