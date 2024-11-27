@@ -2,11 +2,12 @@ import React, { useEffect, useRef, useState } from "react";
 
 const AudioVisualizer = () => {
   const canvasRef = useRef(null);
-  const audioContextRef = useRef(null);
   const [audioSource, setAudioSource] = useState(null);
+  const [audioStarted, setAudioStarted] = useState(false);
 
   useEffect(() => {
-    const mp3Path = require("../sample.mp3"); // Adjust the path to your mp3 file
+    // Dynamically import the MP3 file
+    const mp3Path = require("../../../../audio-files/example.mp3").default; // Ensure Webpack or your bundler resolves correctly
 
     const audio = new Audio(mp3Path);
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -17,8 +18,7 @@ const AudioVisualizer = () => {
     source.connect(analyser);
     analyser.connect(audioContext.destination);
 
-    setAudioSource(audio);
-    audioContextRef.current = { analyser, audioContext };
+    setAudioSource({ audio, analyser, audioContext });
 
     return () => {
       audioContext.close();
@@ -30,7 +30,7 @@ const AudioVisualizer = () => {
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
-    const analyser = audioContextRef.current.analyser;
+    const analyser = audioSource.analyser;
     const dataArray = new Uint8Array(analyser.frequencyBinCount);
 
     const draw = () => {
@@ -66,22 +66,35 @@ const AudioVisualizer = () => {
       requestAnimationFrame(draw);
     };
 
-    audioSource.play();
-    draw();
+    if (audioStarted) {
+      draw();
+    }
+  }, [audioSource, audioStarted]);
 
-    return () => {
-      audioSource.pause();
-    };
-  }, [audioSource]);
+  const startAudio = () => {
+    if (!audioSource) return;
+
+    audioSource.audio.play().then(() => {
+      audioSource.audioContext.resume();
+      setAudioStarted(true);
+    }).catch(err => {
+      console.error("Audio playback error:", err);
+    });
+  };
 
   return (
-    <div>
+    <div style={{ textAlign: "center" }}>
       <canvas
         ref={canvasRef}
         width={600}
         height={300}
         style={{ display: "block", margin: "0 auto", border: "1px solid black" }}
       />
+      {!audioStarted && (
+        <button onClick={startAudio} style={{ marginTop: "20px", padding: "10px 20px", fontSize: "16px" }}>
+          Start Audio
+        </button>
+      )}
     </div>
   );
 };
