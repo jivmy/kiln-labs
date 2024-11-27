@@ -57,7 +57,7 @@ const HomePage = () => {
             }}
           >
             <div
-              className="absolute inset-0 flex justify-center items-center"
+              className="absolute flex justify-center items-center"
               style={{
                 borderRadius: "inherit",
               }}
