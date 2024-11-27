@@ -1,6 +1,5 @@
 import React from "react";
 import SoundOrb from "./SoundOrb";
-import AudioVisualizer from "./AudioVisualizer";
 
 const HomePage = () => {
   return (
@@ -43,26 +42,6 @@ const HomePage = () => {
               }}
             >
               <SoundOrb />
-            </div>
-          </div>
-
-          {/* AudioVisualizer */}
-          <div
-            className="w-full relative"
-            style={{
-              paddingTop: "100%", // 1:1 aspect ratio
-              borderRadius: "24px",
-              backgroundColor: "#f3f3f3",
-              overflow: "hidden",
-            }}
-          >
-            <div
-              className="absolute flex justify-center items-center"
-              style={{
-                borderRadius: "inherit",
-              }}
-            >
-              <AudioVisualizer />
             </div>
           </div>
         </div>
