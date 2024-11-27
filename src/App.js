@@ -1,11 +1,11 @@
 import React from 'react';
 import './index.css';
-import AudioVisualizer from './components/AudioVisualizer';
+import HomePage from './components/HomePage';
 
 function App() {
   return (
     <div className="App">
-      <AudioVisualizer />
+      <HomePage />
     </div>
   );
 }
