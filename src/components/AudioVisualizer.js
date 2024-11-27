@@ -2,35 +2,50 @@ import React, { useEffect, useRef, useState } from "react";
 
 const AudioVisualizer = () => {
   const canvasRef = useRef(null);
-  const [audioSource, setAudioSource] = useState(null);
-  const [audioStarted, setAudioStarted] = useState(false);
+  const [audioContext, setAudioContext] = useState(null);
+  const [analyser, setAnalyser] = useState(null);
+  const [audio, setAudio] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
-    // Dynamically import the MP3 file
-    const mp3Path = require("../sample.mp3").default; // Ensure Webpack or your bundler resolves correctly
+    // Dynamically resolve the path to the MP3 file
+    const audioFilePath = require("../sample.mp3").default;
 
-    const audio = new Audio(mp3Path);
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const source = audioContext.createMediaElementSource(audio);
-    const analyser = audioContext.createAnalyser();
+    const audioElement = new Audio(audioFilePath);
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const analyserNode = audioCtx.createAnalyser();
+    const audioSource = audioCtx.createMediaElementSource(audioElement);
 
-    analyser.fftSize = 256; // 8-bit style
-    source.connect(analyser);
-    analyser.connect(audioContext.destination);
+    analyserNode.fftSize = 256;
+    audioSource.connect(analyserNode);
+    analyserNode.connect(audioCtx.destination);
 
-    setAudioSource({ audio, analyser, audioContext });
+    setAudio(audioElement);
+    setAudioContext(audioCtx);
+    setAnalyser(analyserNode);
 
     return () => {
-      audioContext.close();
+      audioCtx.close(); // Cleanup
     };
   }, []);
 
-  useEffect(() => {
-    if (!audioSource || !canvasRef.current) return;
+  const startAudio = () => {
+    if (!audio || !audioContext || !analyser) return;
+
+    audioContext.resume().then(() => {
+      audio.play();
+      setIsPlaying(true);
+      visualize();
+    }).catch((err) => {
+      console.error("Audio playback error:", err);
+    });
+  };
+
+  const visualize = () => {
+    if (!canvasRef.current || !analyser) return;
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
-    const analyser = audioSource.analyser;
     const dataArray = new Uint8Array(analyser.frequencyBinCount);
 
     const draw = () => {
@@ -48,7 +63,7 @@ const AudioVisualizer = () => {
       let x = 0;
 
       for (let i = 0; i < dataArray.length; i++) {
-        const v = dataArray[i] / 128.0; // Normalize to 0-2
+        const v = dataArray[i] / 128.0;
         const y = (v - 1) * (canvas.height / 4) + canvas.height / 2;
 
         if (i === 0) {
@@ -63,23 +78,12 @@ const AudioVisualizer = () => {
       ctx.lineTo(canvas.width, canvas.height / 2);
       ctx.stroke();
 
-      requestAnimationFrame(draw);
+      if (isPlaying) {
+        requestAnimationFrame(draw);
+      }
     };
 
-    if (audioStarted) {
-      draw();
-    }
-  }, [audioSource, audioStarted]);
-
-  const startAudio = () => {
-    if (!audioSource) return;
-
-    audioSource.audio.play().then(() => {
-      audioSource.audioContext.resume();
-      setAudioStarted(true);
-    }).catch(err => {
-      console.error("Audio playback error:", err);
-    });
+    draw();
   };
 
   return (
@@ -90,8 +94,11 @@ const AudioVisualizer = () => {
         height={300}
         style={{ display: "block", margin: "0 auto", border: "1px solid black" }}
       />
-      {!audioStarted && (
-        <button onClick={startAudio} style={{ marginTop: "20px", padding: "10px 20px", fontSize: "16px" }}>
+      {!isPlaying && (
+        <button
+          onClick={startAudio}
+          style={{ marginTop: "20px", padding: "10px 20px", fontSize: "16px" }}
+        >
           Start Audio
         </button>
       )}
