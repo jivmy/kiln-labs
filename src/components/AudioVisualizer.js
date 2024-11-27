@@ -7,7 +7,7 @@ const AudioVisualizer = () => {
 
   useEffect(() => {
     // Dynamically import the MP3 file
-    const mp3Path = require("../../../../audio-files/example.mp3").default; // Ensure Webpack or your bundler resolves correctly
+    const mp3Path = require("../sample.mp3").default; // Ensure Webpack or your bundler resolves correctly
 
     const audio = new Audio(mp3Path);
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
