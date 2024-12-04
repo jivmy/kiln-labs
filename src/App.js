@@ -12,7 +12,7 @@ const App = () => {
     frequency: [],
     waveform: [],
   });
-
+  const [showVisuals, setShowVisuals] = useState(true); // To toggle the visibility of visuals
   const audioRef = useRef(null);
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
@@ -80,9 +80,24 @@ const App = () => {
     }
   };
 
+  const handleSongEnd = () => {
+    setIsPlaying(false); // Stop the audio
+    setShowVisuals(false); // Hide visualizations
+    setTimeout(() => {
+      setButtonClicked(false); // Scale the play button back up after song ends
+      setShowVisuals(true); // Reset visualizations for the next play
+    }, 500); // Wait for a short duration before scaling the button back
+  };
+
   return (
     <div className="relative flex items-center justify-center w-full h-screen" style={{ backgroundColor: '#0E0808' }}>
-      <audio ref={audioRef} src={song} preload="auto"></audio>
+      <audio
+        ref={audioRef}
+        src={song}
+        preload="auto"
+        onEnded={handleSongEnd} // Detect when song ends
+      ></audio>
+
       {!isPlaying ? (
         <div
           className={`rounded-full border-4 border-white flex items-center justify-center cursor-pointer transition-transform duration-150 ${
@@ -104,11 +119,13 @@ const App = () => {
           ></div>
         </div>
       ) : (
-        <>
-          <AmplitudeVisualizer amplitudeData={audioData.amplitude} />
-          <FrequencyVisualizer frequencyData={audioData.frequency} />
-          <WaveformVisualizer waveformData={audioData.waveform} />
-        </>
+        showVisuals && (
+          <>
+            <AmplitudeVisualizer amplitudeData={audioData.amplitude} />
+            <FrequencyVisualizer frequencyData={audioData.frequency} />
+            <WaveformVisualizer waveformData={audioData.waveform} />
+          </>
+        )
       )}
     </div>
   );
