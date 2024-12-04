@@ -90,7 +90,7 @@ const App = () => {
   };
 
   return (
-    <div className="relative flex items-center justify-center w-full h-screen" style={{ backgroundColor: '#0E0808' }}>
+    <div className="relative flex items-center justify-center w-full h-screen" style={{ backgroundColor: '#0E0808', overflowX: 'hidden' }}>
       <audio
         ref={audioRef}
         src={song}
@@ -123,7 +123,7 @@ const App = () => {
           <div
             className="visual-wrapper"
             style={{
-              maxWidth: '90%',
+              maxWidth: '90vw', // Ensure the container does not exceed 90% of the viewport width
               maxHeight: '90%',
               display: 'flex',
               justifyContent: 'center',
@@ -131,6 +131,7 @@ const App = () => {
               flexDirection: 'column',
               width: '100%',
               height: '100%',
+              overflow: 'hidden', // Prevent overflow from visuals
             }}
           >
             <AmplitudeVisualizer amplitudeData={audioData.amplitude} />

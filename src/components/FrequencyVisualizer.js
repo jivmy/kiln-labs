@@ -7,7 +7,7 @@ const FrequencyVisualizer = ({ frequencyData }) => {
 
   // Calculate peak frequency or average of top bands
   const peakFrequency = frequencyData.slice(0, 10).reduce((sum, value) => sum + value, 0) / 10; // Focus on low-frequency bands
-  const ringSize = Math.max(100, peakFrequency * 3.5); // Increased multiplier for sharper peaks
+  const ringSize = Math.max(100, peakFrequency * 4); // Increased multiplier for sharper peaks
 
   return (
     <div
