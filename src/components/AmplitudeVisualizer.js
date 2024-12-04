@@ -1,24 +1,26 @@
 import React from 'react';
 
-const AmplitudeVisualizer = ({ amplitudeData }) => {
+const OpacityVisualizer = ({ amplitudeData }) => {
   if (!amplitudeData) {
-    return null; // Handle missing or invalid data gracefully
+    return null;
   }
 
-  // Smoothed scaling based on average amplitude
-  const amplitudeSize = Math.max(50, amplitudeData * 1.5); // Reduced multiplier for gradual scaling
+  // Set the opacity to change more subtly with a higher threshold for amplitude
+  const opacity = Math.min(1, Math.max(0.1, amplitudeData * 0.008)); // Lower multiplier for slower fade
 
   return (
     <div
-      className="absolute rounded-full"
+      className="absolute"
       style={{
-        width: `${amplitudeSize}px`,
-        height: `${amplitudeSize}px`,
-        backgroundColor: '#FFFACD', // Light pale yellow
-        transition: 'width 0.3s ease, height 0.3s ease', // Smooth scaling
+        width: '50px',
+        height: '50px',
+        backgroundColor: '#FFFACD',
+        borderRadius: '50%',
+        opacity: opacity,
+        transition: 'opacity 0.3s ease',
       }}
     ></div>
   );
 };
 
-export default AmplitudeVisualizer;
+export default OpacityVisualizer;
