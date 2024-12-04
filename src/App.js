@@ -120,11 +120,23 @@ const App = () => {
         </div>
       ) : (
         showVisuals && (
-          <>
+          <div
+            className="visual-wrapper"
+            style={{
+              maxWidth: '90%',
+              maxHeight: '90%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              flexDirection: 'column',
+              width: '100%',
+              height: '100%',
+            }}
+          >
             <AmplitudeVisualizer amplitudeData={audioData.amplitude} />
             <FrequencyVisualizer frequencyData={audioData.frequency} />
             <WaveformVisualizer waveformData={audioData.waveform} />
-          </>
+          </div>
         )
       )}
     </div>
