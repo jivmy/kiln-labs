@@ -6,13 +6,13 @@ import song from './assets/suno.mp3';
 
 const App = () => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [buttonClicked, setButtonClicked] = useState(false); // State for scaling animation
+  const [buttonClicked, setButtonClicked] = useState(false);
   const [audioData, setAudioData] = useState({
     amplitude: 0,
     frequency: [],
     waveform: [],
   });
-  const [showVisuals, setShowVisuals] = useState(true); // To toggle the visibility of visuals
+  const [showVisuals, setShowVisuals] = useState(true);
   const audioRef = useRef(null);
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
@@ -20,6 +20,10 @@ const App = () => {
   const timeDomainDataRef = useRef(null);
 
   useEffect(() => {
+    // Set the background color inline
+    document.documentElement.style.backgroundColor = '#0E0808';
+    document.body.style.backgroundColor = '#0E0808';
+
     if (!audioContextRef.current) {
       const audioContext = new (window.AudioContext || window.webkitAudioContext)();
       audioContextRef.current = audioContext;
@@ -70,32 +74,32 @@ const App = () => {
         await audioContext.resume();
       }
 
-      setButtonClicked(true); // Trigger scaling animation
+      setButtonClicked(true); 
       setTimeout(() => {
-        audioElement.play(); // Start audio after delay
-        setIsPlaying(true); // Start visualization
-      }, 300); // 1 second delay before audio starts
+        audioElement.play(); 
+        setIsPlaying(true); 
+      }, 300);
     } catch (error) {
       console.error('Error starting audio playback:', error);
     }
   };
 
   const handleSongEnd = () => {
-    setIsPlaying(false); // Stop the audio
-    setShowVisuals(false); // Hide visualizations
+    setIsPlaying(false); 
+    setShowVisuals(false); 
     setTimeout(() => {
-      setButtonClicked(false); // Scale the play button back up after song ends
-      setShowVisuals(true); // Reset visualizations for the next play
-    }, 500); // Wait for a short duration before scaling the button back
+      setButtonClicked(false); 
+      setShowVisuals(true); 
+    }, 500); 
   };
 
   return (
-    <div className="relative flex items-center justify-center w-full h-screen" style={{ backgroundColor: '#0E0808', overflowX: 'hidden' }}>
+    <div className="relative flex items-center justify-center w-full h-screen">
       <audio
         ref={audioRef}
         src={song}
         preload="auto"
-        onEnded={handleSongEnd} // Detect when song ends
+        onEnded={handleSongEnd} 
       ></audio>
 
       {!isPlaying ? (
@@ -111,7 +115,7 @@ const App = () => {
             style={{
               width: '0',
               height: '0',
-              marginLeft: '8px', // Offset play icon to the right
+              marginLeft: '8px',
               borderTop: '15px solid transparent',
               borderBottom: '15px solid transparent',
               borderLeft: '25px solid white',
@@ -123,7 +127,7 @@ const App = () => {
           <div
             className="visual-wrapper"
             style={{
-              maxWidth: '90vw', // Ensure the container does not exceed 90% of the viewport width
+              maxWidth: '90vw',
               maxHeight: '90%',
               display: 'flex',
               justifyContent: 'center',
@@ -131,7 +135,7 @@ const App = () => {
               flexDirection: 'column',
               width: '100%',
               height: '100%',
-              overflow: 'hidden', // Prevent overflow from visuals
+              overflow: 'hidden',
             }}
           >
             <AmplitudeVisualizer amplitudeData={audioData.amplitude} />
