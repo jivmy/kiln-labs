@@ -1,0 +1,49 @@
+/* Basic global styles */
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  #root {
+    height: 100%;
+  }
+  
+  /* Custom styles for visualizations */
+  .visualizer {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    background-color: rgba(255, 255, 255, 0.8);
+    overflow: hidden;
+  }
+  
+  .visualizer-bar {
+    width: 4px;
+    margin: 0 2px;
+    background-color: rgba(0, 0, 0, 0.6);
+    transition: height 0.2s;
+  }
+  
+  .controls {
+    position: absolute;
+    bottom: 20px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .controls button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .controls button:hover {
+    background-color: #444;
+  }
+  
