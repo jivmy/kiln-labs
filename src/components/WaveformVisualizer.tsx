@@ -1,6 +1,8 @@
-import React from 'react';
+type WaveformVisualizerProps = {
+  waveformData: number[];
+};
 
-const WaveformVisualizer = ({ waveformData }) => {
+const WaveformVisualizer = ({ waveformData }: WaveformVisualizerProps) => {
   if (!Array.isArray(waveformData) || waveformData.length === 0) {
     return null; // Handle empty or invalid data gracefully
   }

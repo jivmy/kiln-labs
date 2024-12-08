@@ -1,0 +1,67 @@
+/* General Layout */
+.container {
+    width: 100%;
+    height: auto;
+    max-width: 1200px; /* Added max-width for centering */
+    padding-top: 80px;
+    padding-bottom: 160px;
+    background: white;
+    display: flex; /* Changed from inline-flex to flex */
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 80px;
+    margin: 0 auto; /* Center the container horizontally */
+}
+  
+.header-text {
+    width: 306px;
+    text-align: center;
+    color: black;
+    font-size: 19px;
+    font-family: 'New York', serif;
+    font-weight: 496;
+    word-wrap: break-word;
+}
+  
+.grid {
+    align-self: stretch;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 24px;
+    display: flex; /* Changed from inline-flex to flex */
+    flex-wrap: wrap;
+}
+  
+.grid-item {
+    width: 307px;
+    display: flex; /* Changed from inline-flex to flex */
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 8px;
+}
+  
+.image-placeholder {
+    align-self: stretch;
+    height: 307px;
+    opacity: 0.03;
+    background: black;
+    border-radius: 8px;
+}
+  
+.item-info {
+    align-self: stretch;
+    justify-content: space-between;
+    align-items: center;
+    display: flex; /* Changed from inline-flex to flex */
+}
+  
+.item-label, 
+.item-number {
+    color: black;
+    font-size: 12px;
+    font-family: 'New York', serif;
+    font-weight: 400;
+    word-wrap: break-word;
+}

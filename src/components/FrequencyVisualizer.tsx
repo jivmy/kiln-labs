@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 
-const FrequencyVisualizer = ({ frequencyData }) => {
+interface FrequencyVisualizerProps {
+  frequencyData: number[];
+}
+
+const FrequencyVisualizer: React.FC<FrequencyVisualizerProps> = ({ frequencyData }) => {
   // Always call hooks unconditionally
   const width = 500;
   const height = 500;

@@ -1,40 +1,47 @@
 import React, { useState, useEffect, useRef } from 'react';
-import AmplitudeVisualizer from './components/AmplitudeVisualizer';
-import FrequencyVisualizer from './components/FrequencyVisualizer';
-import WaveformVisualizer from './components/WaveformVisualizer';
-import song from './assets/suno.mp3';
+import AmplitudeVisualizer from '../components/AmplitudeVisualizer';
+import FrequencyVisualizer from '../components/FrequencyVisualizer';
+import WaveformVisualizer from '../components/WaveformVisualizer';
+import song from '../assets/suno.mp3';
 
-const App = () => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [buttonClicked, setButtonClicked] = useState(false);
-  const [audioData, setAudioData] = useState({
+interface AudioData {
+  amplitude: number;
+  frequency: number[];
+  waveform: number[];
+}
+
+const Suno: React.FC = () => {
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [buttonClicked, setButtonClicked] = useState<boolean>(false);
+  const [audioData, setAudioData] = useState<AudioData>({
     amplitude: 0,
     frequency: [],
     waveform: [],
   });
-  const [showVisuals, setShowVisuals] = useState(true);
-  const audioRef = useRef(null);
-  const audioContextRef = useRef(null);
-  const analyserRef = useRef(null);
-  const frequencyDataRef = useRef(null);
-  const timeDomainDataRef = useRef(null);
+  const [showVisuals, setShowVisuals] = useState<boolean>(true);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const frequencyDataRef = useRef<Uint8Array | null>(null);
+  const timeDomainDataRef = useRef<Uint8Array | null>(null);
 
   useEffect(() => {
-    // Set the background color inline
     document.documentElement.style.backgroundColor = '#0E0808';
     document.body.style.backgroundColor = '#0E0808';
 
     if (!audioContextRef.current) {
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const audioContext = new (window.AudioContext || window.AudioContext)();
       audioContextRef.current = audioContext;
 
       const analyser = audioContext.createAnalyser();
       analyser.fftSize = 256;
       analyserRef.current = analyser;
 
-      const source = audioContext.createMediaElementSource(audioRef.current);
-      source.connect(analyser);
-      analyser.connect(audioContext.destination);
+      if (audioRef.current) {
+        const source = audioContext.createMediaElementSource(audioRef.current);
+        source.connect(analyser);
+        analyser.connect(audioContext.destination);
+      }
 
       frequencyDataRef.current = new Uint8Array(analyser.frequencyBinCount);
       timeDomainDataRef.current = new Uint8Array(analyser.fftSize);
@@ -52,8 +59,8 @@ const App = () => {
       analyserRef.current.getByteTimeDomainData(timeDomainData);
 
       const amplitude = frequencyData.reduce((sum, value) => sum + value, 0) / frequencyData.length;
-      const frequency = [...frequencyData];
-      const waveform = [...timeDomainData];
+      const frequency = Array.from(frequencyData);
+      const waveform = Array.from(timeDomainData);
 
       setAudioData({ amplitude, frequency, waveform });
 
@@ -70,13 +77,13 @@ const App = () => {
     const audioElement = audioRef.current;
 
     try {
-      if (audioContext.state === 'suspended') {
+      if (audioContext?.state === 'suspended') {
         await audioContext.resume();
       }
 
       setButtonClicked(true); 
       setTimeout(() => {
-        audioElement.play(); 
+        audioElement?.play(); 
         setIsPlaying(true); 
       }, 300);
     } catch (error) {
@@ -148,4 +155,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default Suno;

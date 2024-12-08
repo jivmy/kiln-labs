@@ -1,6 +1,12 @@
 import React from 'react';
 
-const Controls = ({ isPlaying, onPlayPause, onReset }) => {
+interface ControlsProps {
+  isPlaying: boolean;
+  onPlayPause: () => void;
+  onReset: () => void;
+}
+
+const Controls: React.FC<ControlsProps> = ({ isPlaying, onPlayPause, onReset }) => {
   return (
     <div className="absolute bottom-4 w-full flex justify-center space-x-4">
       <button

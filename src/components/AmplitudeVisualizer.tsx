@@ -1,6 +1,10 @@
 import React from 'react';
 
-const OpacityVisualizer = ({ amplitudeData }) => {
+interface OpacityVisualizerProps {
+  amplitudeData: number;
+}
+
+const OpacityVisualizer: React.FC<OpacityVisualizerProps> = ({ amplitudeData }) => {
   if (!amplitudeData) {
     return null;
   }

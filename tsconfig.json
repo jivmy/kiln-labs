@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES2016",                          // Target ECMAScript version for output
+    "module": "commonjs",                        // Use CommonJS for modules (used in Node.js and many build tools)
+    "strict": true,                              // Enable strict type checking
+    "jsx": "react-jsx",                          // Use React's modern JSX runtime
+    "esModuleInterop": true,                    // Enable ES module interoperability
+    "skipLibCheck": true,                       // Skip checking type definitions for libraries
+    "forceConsistentCasingInFileNames": true,   // Ensure imports match exact file casing
+    "moduleResolution": "node",                 // Look for modules using Node's resolution logic
+    "allowSyntheticDefaultImports": true,      // Allow default imports even if no default export
+    "baseUrl": ".",                             // Set base URL for module imports
+    "paths": {                                  // Custom module paths if needed
+      "*": ["src/*"]
+    }
+  },
+  "include": [
+    "src/**/*",         // Include all TypeScript files in the src/ folder
+    "custom.d.ts"       // Include the custom module declaration file
+  ],
+  "exclude": [
+    "node_modules",     // Exclude dependencies
+    "dist"              // Exclude build output folder
+  ]
+}
+
+

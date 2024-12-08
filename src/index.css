@@ -1,361 +1,96 @@
+/* Import Tailwind layers */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Set the default font for the entire project */
 @layer base {
   html {
-    font-family: 'NewYorkMedium', sans-serif !important;
+    font-family: 'NewYork', serif; 
+  }
+
+  body {
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
-/* NewYorkExtraLarge */
+/* NewYork Font Declaration */
 @font-face {
-  font-family: 'NewYorkExtraLarge';
-  src: url('/public/fonts/new-york/NewYorkExtraLarge-Black.otf') format('opentype');
-  font-weight: 900;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'NewYorkExtraLarge';
-  src: url('/public/fonts/new-york/NewYorkExtraLarge-BlackItalic.otf') format('opentype');
-  font-weight: 900;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'NewYorkExtraLarge';
-  src: url('/public/fonts/new-york/NewYorkExtraLarge-Bold.otf') format('opentype');
-  font-weight: 700;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'NewYorkExtraLarge';
-  src: url('/public/fonts/new-york/NewYorkExtraLarge-BoldItalic.otf') format('opentype');
-  font-weight: 700;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'NewYorkExtraLarge';
-  src: url('/public/fonts/new-york/NewYorkExtraLarge-Heavy.otf') format('opentype');
-  font-weight: 800;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'NewYorkExtraLarge';
-  src: url('/public/fonts/new-york/NewYorkExtraLarge-HeavyItalic.otf') format('opentype');
-  font-weight: 800;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'NewYorkExtraLarge';
-  src: url('/public/fonts/new-york/NewYorkExtraLarge-Medium.otf') format('opentype');
-  font-weight: 500;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'NewYorkExtraLarge';
-  src: url('/public/fonts/new-york/NewYorkExtraLarge-MediumItalic.otf') format('opentype');
-  font-weight: 500;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'NewYorkExtraLarge';
-  src: url('/public/fonts/new-york/NewYorkExtraLarge-Regular.otf') format('opentype');
+  font-family: 'NewYork';
+  src: url('/fonts/new-york/NewYork-Regular.otf') format('opentype');
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'NewYorkExtraLarge';
-  src: url('/public/fonts/new-york/NewYorkExtraLarge-RegularItalic.otf') format('opentype');
+  font-family: 'NewYork';
+  src: url('/fonts/new-york/NewYork-RegularItalic.otf') format('opentype');
   font-weight: 400;
   font-style: italic;
 }
 
 @font-face {
-  font-family: 'NewYorkExtraLarge';
-  src: url('/public/fonts/new-york/NewYorkExtraLarge-Semibold.otf') format('opentype');
-  font-weight: 600;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'NewYorkExtraLarge';
-  src: url('/public/fonts/new-york/NewYorkExtraLarge-SemiboldItalic.otf') format('opentype');
-  font-weight: 600;
-  font-style: italic;
-}
-
-/* NewYorkLarge */
-@font-face {
-  font-family: 'NewYorkLarge';
-  src: url('/public/fonts/new-york/NewYorkLarge-Black.otf') format('opentype');
-  font-weight: 900;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'NewYorkLarge';
-  src: url('/public/fonts/new-york/NewYorkLarge-BlackItalic.otf') format('opentype');
-  font-weight: 900;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'NewYorkLarge';
-  src: url('/public/fonts/new-york/NewYorkLarge-Bold.otf') format('opentype');
-  font-weight: 700;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'NewYorkLarge';
-  src: url('/public/fonts/new-york/NewYorkLarge-BoldItalic.otf') format('opentype');
-  font-weight: 700;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'NewYorkLarge';
-  src: url('/public/fonts/new-york/NewYorkLarge-Heavy.otf') format('opentype');
-  font-weight: 800;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'NewYorkLarge';
-  src: url('/public/fonts/new-york/NewYorkLarge-HeavyItalic.otf') format('opentype');
-  font-weight: 800;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'NewYorkLarge';
-  src: url('/public/fonts/new-york/NewYorkLarge-Medium.otf') format('opentype');
+  font-family: 'NewYork';
+  src: url('/fonts/new-york/NewYork-Medium.otf') format('opentype');
   font-weight: 500;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'NewYorkLarge';
-  src: url('/public/fonts/new-york/NewYorkLarge-MediumItalic.otf') format('opentype');
+  font-family: 'NewYork';
+  src: url('/fonts/new-york/NewYork-MediumItalic.otf') format('opentype');
   font-weight: 500;
   font-style: italic;
 }
 
 @font-face {
-  font-family: 'NewYorkLarge';
-  src: url('/public/fonts/new-york/NewYorkLarge-Regular.otf') format('opentype');
-  font-weight: 400;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'NewYorkLarge';
-  src: url('/public/fonts/new-york/NewYorkLarge-RegularItalic.otf') format('opentype');
-  font-weight: 400;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'NewYorkLarge';
-  src: url('/public/fonts/new-york/NewYorkLarge-Semibold.otf') format('opentype');
+  font-family: 'NewYork';
+  src: url('/fonts/new-york/NewYork-Semibold.otf') format('opentype');
   font-weight: 600;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'NewYorkLarge';
-  src: url('/public/fonts/new-york/NewYorkLarge-SemiboldItalic.otf') format('opentype');
+  font-family: 'NewYork';
+  src: url('/fonts/new-york/NewYork-SemiboldItalic.otf') format('opentype');
   font-weight: 600;
   font-style: italic;
 }
 
-/* NewYorkMedium */
 @font-face {
-  font-family: 'NewYorkMedium';
-  src: url('/public/fonts/new-york/NewYorkMedium-Black.otf') format('opentype');
-  font-weight: 900;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'NewYorkMedium';
-  src: url('/public/fonts/new-york/NewYorkMedium-BlackItalic.otf') format('opentype');
-  font-weight: 900;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'NewYorkMedium';
-  src: url('/public/fonts/new-york/NewYorkMedium-Bold.otf') format('opentype');
+  font-family: 'NewYork';
+  src: url('/fonts/new-york/NewYork-Bold.otf') format('opentype');
   font-weight: 700;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'NewYorkMedium';
-  src: url('/public/fonts/new-york/NewYorkMedium-BoldItalic.otf') format('opentype');
+  font-family: 'NewYork';
+  src: url('/fonts/new-york/NewYork-BoldItalic.otf') format('opentype');
   font-weight: 700;
   font-style: italic;
 }
 
 @font-face {
-  font-family: 'NewYorkMedium';
-  src: url('/public/fonts/new-york/NewYorkMedium-Heavy.otf') format('opentype');
-  font-weight: 800;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'NewYorkMedium';
-  src: url('/public/fonts/new-york/NewYorkMedium-HeavyItalic.otf') format('opentype');
-  font-weight: 800;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'NewYorkMedium';
-  src: url('/public/fonts/new-york/NewYorkMedium-Medium.otf') format('opentype');
-  font-weight: 500;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'NewYorkMedium';
-  src: url('/public/fonts/new-york/NewYorkMedium-MediumItalic.otf') format('opentype');
-  font-weight: 500;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'NewYorkMedium';
-  src: url('/public/fonts/new-york/NewYorkMedium-Regular.otf') format('opentype');
-  font-weight: 400;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'NewYorkMedium';
-  src: url('/public/fonts/new-york/NewYorkMedium-RegularItalic.otf') format('opentype');
-  font-weight: 400;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'NewYorkMedium';
-  src: url('/public/fonts/new-york/NewYorkMedium-Semibold.otf') format('opentype');
-  font-weight: 600;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'NewYorkMedium';
-  src: url('/public/fonts/new-york/NewYorkMedium-SemiboldItalic.otf') format('opentype');
-  font-weight: 600;
-  font-style: italic;
-}
-
-/* NewYorkSmall */
-@font-face {
-  font-family: 'NewYorkSmall';
-  src: url('/public/fonts/new-york/NewYorkSmall-Black.otf') format('opentype');
+  font-family: 'NewYork';
+  src: url('/fonts/new-york/NewYork-Black.otf') format('opentype');
   font-weight: 900;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'NewYorkSmall';
-  src: url('/public/fonts/new-york/NewYorkSmall-BlackItalic.otf') format('opentype');
+  font-family: 'NewYork';
+  src: url('/fonts/new-york/NewYork-BlackItalic.otf') format('opentype');
   font-weight: 900;
   font-style: italic;
 }
 
-@font-face {
-  font-family: 'NewYorkSmall';
-  src: url('/public/fonts/new-york/NewYorkSmall-Bold.otf') format('opentype');
-  font-weight: 700;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'NewYorkSmall';
-  src: url('/public/fonts/new-york/NewYorkSmall-BoldItalic.otf') format('opentype');
-  font-weight: 700;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'NewYorkSmall';
-  src: url('/public/fonts/new-york/NewYorkSmall-Heavy.otf') format('opentype');
-  font-weight: 800;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'NewYorkSmall';
-  src: url('/public/fonts/new-york/NewYorkSmall-HeavyItalic.otf') format('opentype');
-  font-weight: 800;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'NewYorkSmall';
-  src: url('/public/fonts/new-york/NewYorkSmall-Medium.otf') format('opentype');
-  font-weight: 500;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'NewYorkSmall';
-  src: url('/public/fonts/new-york/NewYorkSmall-MediumItalic.otf') format('opentype');
-  font-weight: 500;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'NewYorkSmall';
-  src: url('/public/fonts/new-york/NewYorkSmall-Regular.otf') format('opentype');
-  font-weight: 400;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'NewYorkSmall';
-  src: url('/public/fonts/new-york/NewYorkSmall-RegularItalic.otf') format('opentype');
-  font-weight: 400;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'NewYorkSmall';
-  src: url('/public/fonts/new-york/NewYorkSmall-Semibold.otf') format('opentype');
-  font-weight: 600;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'NewYorkSmall';
-  src: url('/public/fonts/new-york/NewYorkSmall-SemiboldItalic.otf') format('opentype');
-  font-weight: 600;
-  font-style: italic;
-}
-
-body {
-  margin: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
+/* Responsive padding for mobile */
 @media screen and (max-width: 640px) {
   body {
-    @apply px-2;
+    padding-left: 0.5rem; 
+    padding-right: 0.5rem;
   }
 }
