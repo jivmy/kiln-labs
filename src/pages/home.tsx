@@ -12,6 +12,15 @@ function Home() {
         <div className="grid-item">
           <div className="image-placeholder"></div>
         </div>
+        <div className="grid-item">
+          <div className="image-placeholder"></div>
+        </div>
+        <div className="grid-item">
+          <div className="image-placeholder"></div>
+        </div>
+        <div className="grid-item">
+          <div className="image-placeholder"></div>
+        </div>
       </div>
     </div>
   );
