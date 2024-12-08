@@ -3,7 +3,7 @@ import './home.css';
 
 function Home() {
   const projects = [
-    { label: 'Kalipso Brand', number: '001' },
+    { label: 'Kalipso', number: '001' },
     { label: '—', number: '002' },
     { label: '—', number: '003' },
     { label: '—', number: '004' },
@@ -25,8 +25,8 @@ function Home() {
           <div key={index} className="grid-item">
             <div className="image-placeholder"></div>
             <div className="item-info">
-              <div className="item-label">{project.label}</div>
-              <div className="item-number">{project.number}</div>
+              <div className="item-number">{project.number}</div> {/* Moved here */}
+              <div className="item-label">{project.label}</div>  {/* Moved here */}
             </div>
           </div>
         ))}
