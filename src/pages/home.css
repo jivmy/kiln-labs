@@ -15,10 +15,10 @@
 }
   
 .header-text {
-    width: 306px;
+    width: 312px;
     text-align: center;
     color: black;
-    font-size: 24px;
+    font-size: 20px;
     font-family: 'New York', serif;
     font-weight: 500; /* Use standard font-weight values */
     word-wrap: break-word;
@@ -34,7 +34,8 @@
 }
   
 .grid-item {
-    width: 307px;
+    width: 300px;
+    height: 500px;
     display: flex; 
     flex-direction: column;
     justify-content: flex-start;
@@ -44,7 +45,7 @@
   
 .image-placeholder {
     align-self: stretch;
-    height: 307px;
+    height: 100%;
     opacity: 0.03;
     background: black;
     border-radius: 8px;
