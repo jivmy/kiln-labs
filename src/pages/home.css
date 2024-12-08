@@ -1,16 +1,15 @@
-body {
-  font-family: 'New York', serif;
-}
-
-.container {
+/* Ensure wrapper spans full width and height */
+.wrapper {
+  width: 100%;
+  height: 100vh; /* Full viewport height */
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 100vh;
-  text-align: center;
 }
 
+/* Style the header text */
 .header-text {
   font-size: 24px;
+  font-family: 'New York', serif;
+  text-align: center;
 }
