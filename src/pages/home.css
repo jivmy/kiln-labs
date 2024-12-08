@@ -3,17 +3,16 @@
   src: url('../assets/NewYork.ttf') format('truetype');
 }
 
-
-/* Ensure wrapper spans full width and height */
 .wrapper {
   width: 100%;
-  height: 100vh; /* Full viewport height */
+  height: 100vh;
   display: flex;
+  flex-direction: column; /* Stack elements vertically */
   justify-content: center;
   align-items: center;
+  gap: 48px;
 }
 
-/* Style the header text */
 .header {
   width: 200px;
   font-size: 24px;
