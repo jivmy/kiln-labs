@@ -3,7 +3,7 @@ import './home.css';
 
 const Home = () => (
   <div className="wrapper">
-    <h1 className="header-text">Crafting playful interfaces from New York City.</h1>
+    <h1 className="header">Crafting playful interfaces from New York City.</h1>
   </div>
 );
 
