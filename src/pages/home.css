@@ -11,6 +11,6 @@
 .header {
   font-size: 24px;
   font-family: 'New York', serif;
-  font-weight: 500;
+  font-weight: 500 !important; /* Force the correct weight */
   text-align: center;
 }
