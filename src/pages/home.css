@@ -9,6 +9,7 @@
 
 /* Style the header text */
 .header {
+  width: 200px;
   font-size: 24px;
   font-family: 'New York', -apple-system, serif;
   font-weight: 500;
