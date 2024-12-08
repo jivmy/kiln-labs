@@ -1,3 +1,9 @@
+@font-face {
+  font-family: 'New York';
+  src: url('../assets/NewYork.ttf') format('truetype');
+}
+
+
 /* Ensure wrapper spans full width and height */
 .wrapper {
   width: 100%;
