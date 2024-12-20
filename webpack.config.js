@@ -4,30 +4,28 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
   mode: 'development',
-  entry: {
-    main: './src/index.js',
-    suno: './src/suno.js',
-  },
+  entry: './src/index.tsx',
   output: {
-    filename: '[name].bundle.js',
+    filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
+    publicPath: '/',
   },
   resolve: {
-    extensions: ['.js', '.jsx'],
+    extensions: ['.tsx', '.ts', '.js', '.jsx'],
   },
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.(ts|tsx)$/,
         exclude: /node_modules/,
         use: 'babel-loader',
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
+        use: ['style-loader', 'css-loader', 'postcss-loader'],
       },
       {
-        test: /\.(png|svg|jpg|jpeg|gif|mp3)$/,
+        test: /\.(png|svg|jpg|jpeg|gif|mp3|ttf)$/,
         type: 'asset/resource',
       },
     ],
@@ -35,23 +33,16 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: './src/index.html',
-      chunks: ['main'],
-    }),
-    new HtmlWebpackPlugin({
-      filename: 'suno.html',
-      template: './src/suno.html',
-      chunks: ['suno'],
+      template: './public/index.html',
     }),
   ],
   devServer: {
-    static: path.resolve(__dirname, 'dist'),
-    port: 8080,
+    static: {
+      directory: path.join(__dirname, 'public'),
+    },
+    port: 3000,
     open: true,
     hot: true,
-    historyApiFallback: {
-      rewrites: [{ from: /^\/suno$/, to: '/suno.html' }],
-    },
+    historyApiFallback: true,
   },
 };
