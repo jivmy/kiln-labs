@@ -1,16 +1,7 @@
-import React, { useEffect } from 'react';
-import DustMoteRain from '../components/DustMoteRain';
+import React from 'react';
+import BreathingCircles from '../components/BreathingCircles';
 
 const Home = () => {
-  useEffect(() => {
-    console.log('Home component mounted');
-    const demoDiv = document.querySelector('.demo') as HTMLDivElement;
-    console.log('Demo div dimensions:', {
-      width: demoDiv?.offsetWidth,
-      height: demoDiv?.offsetHeight
-    });
-  }, []);
-
   return (
     <div className="wrapper">
       <h1 className="header">Crafting playful interfaces from New York City.</h1>
@@ -20,11 +11,10 @@ const Home = () => {
           position: 'relative',
           width: '100%',
           aspectRatio: '1',
-          backgroundColor: 'rgba(0, 0, 0, 0.04)',
-          border: '2px solid blue', // Debug border
+          backgroundColor: 'transparent',
         }}
       >
-        <DustMoteRain />
+        <BreathingCircles />
       </div>
       <h1 className="header">Now—running, egg-noodles, morning dew. </h1>
     </div>

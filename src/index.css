@@ -66,7 +66,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 48px;
+  gap: 12px;
   margin: 0 auto;
 }
 
@@ -84,7 +84,6 @@
 .demo {
   width: 100%;
   aspect-ratio: 1;
-  background-color: #000000;  /* or any color you want */
-  opacity: 0.04;
+  opacity: 1;
   border-radius: 8px;
 }

@@ -1,16 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
-interface Particle {
-  x: number;
-  y: number;
-  speed: number;
-  opacity: number;
-  size: number;
-}
-
-const DustMoteRain: React.FC = () => {
+const BreathingCircles: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const particlesRef = useRef<Particle[]>([]);
   const animationFrameRef = useRef<number>();
   
   useEffect(() => {
@@ -20,44 +11,37 @@ const DustMoteRain: React.FC = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    let time = 0;
+    const circles = Array.from({ length: 3 }, (_, i) => ({
+      baseRadius: 60 + i * 50,
+      phase: i * Math.PI / 4
+    }));
+
     const resizeCanvas = () => {
       const parent = canvas.parentElement;
       if (!parent) return;
       canvas.width = parent.offsetWidth;
       canvas.height = parent.offsetHeight;
-
-      // Reinitialize particles when canvas is resized
-      initParticles();
-    };
-
-    const initParticles = () => {
-      particlesRef.current = Array.from({ length: 100 }, () => ({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        speed: 0.2 + Math.random() * 0.3,
-        opacity: 0.02 + Math.random() * 0.03,
-        size: 1 + Math.random() * 1.5
-      }));
     };
 
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      particlesRef.current.forEach(particle => {
-        // Update position
-        particle.y += particle.speed;
-        if (particle.y > canvas.height) {
-          particle.y = -5;
-          particle.x = Math.random() * canvas.width;
-        }
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
 
-        // Draw particle
+      circles.forEach(circle => {
+        // Create breathing effect with larger amplitude
+        const radius = circle.baseRadius + Math.sin(time + circle.phase) * 30;
+        
         ctx.beginPath();
-        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(0, 0, 0, ${particle.opacity})`;
-        ctx.fill();
+        ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(173, 216, 230, 0.2)`;
+        ctx.lineWidth = 4;
+        ctx.stroke();
       });
 
+      time += 0.015;
       animationFrameRef.current = requestAnimationFrame(animate);
     };
 
@@ -82,10 +66,9 @@ const DustMoteRain: React.FC = () => {
         left: 0,
         width: '100%',
         height: '100%',
-        borderRadius: '8px',
       }}
     />
   );
 };
 
-export default DustMoteRain; 
+export default BreathingCircles; 
